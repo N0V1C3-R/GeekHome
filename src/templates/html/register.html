@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+{{ template "header" . }}
+
+<link rel="stylesheet" href="templates/css/login&register.css">
+
+{{ template "middle" . }}
+
+<div class="container">
+    <h1 class="topic">Create Your Account</h1>
+    <form id="registerForm" method="post">
+
+        <div class="form-input">
+            <input type="email" id="email" name="email" required>
+            <label for="email" class="input-label">Email Address</label>
+        </div>
+
+        <div class="form-input">
+            <input type="password" id="password" name="password" oninput="checkPasswordStrength()" required
+                   autocomplete>
+            <label for="password" class="input-label">Password</label>
+            <div class="password-meter">
+                <div id="bar1" class="password-meter-bar"></div>
+                <div id="bar2" class="password-meter-bar"></div>
+                <div id="bar3" class="password-meter-bar"></div>
+            </div>
+        </div>
+
+        <div class="form-input">
+            <input type="password" id="confirmPassword" name="confirmPassword" oninput="validatePassword()" required
+                   autocomplete>
+            <label for="confirmPassword" class="input-label">Confirm Password</label>
+            <span id="passwordMismatchError" class="error-message" style="display: none;">Passwords do not match</span>
+        </div>
+
+        <div class="form-output">
+            <input type="submit" value="Register">
+        </div>
+        <div class="account-exists">Already have an account? <a class="no-underline" href="/login" methods="get">Log
+            in</a></div>
+        <div class="visitor"><a class="no-underline" href="/" methods="get">Visitor Use</a></div>
+    </form>
+</div>
+
+<div id="verificationModal" style="display: none;">
+    <form id="verificationCode" method="post">
+        <div class="close-button" onclick="closeVerificationModal()"></div>
+        <div class="form-input">
+            <input type="text" id="code" required>
+            <label for="verificationCode" class="input-label">Verification Code</label>
+        </div>
+        <div class="form-output">
+            <input type="submit" value="Verify">
+        </div>
+    </form>
+</div>
+
+<script>
+    async function postRequestServer(url, email, body) {
+        return await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Request-ID": "register-" + email
+            },
+            body: body
+        })
+    }
+
+    document.getElementById("registerForm").addEventListener("submit", async function (event) {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            event.preventDefault();
+            let isValid = true
+            let errorMsg;
+            const allowedChar = /^[A-Za-z0-9!@#$%^&*_+<>?,.:]+$/
+
+            if (password.length < 6) {
+                isValid = false;
+                errorMsg = "ERROR: Password length is less than 6, please use a password of six or more digits, and a strong password is recommended!"
+            } else if (!allowedChar.test(password)) {
+                isValid = false;
+                errorMsg = "ERROR: Password contains illegal characters, please use numbers, upper and lower case letters or special symbols\n(The supported special symbols are: !@#$%^&*_+<>?,. )"
+            } else if (password !== confirmPassword) {
+                isValid = false;
+                errorMsg = "ERROR: Two times the password input does not match!"
+            }
+
+            if (!isValid) {
+                alert(errorMsg);
+            } else {
+                const username = document.getElementById("email").value;
+                const email = document.getElementById("email").value;
+                const registerRequestBody = JSON.stringify({"username": username, "email": email, "password": password})
+                const response = await postRequestServer("/register", email, registerRequestBody)
+                if (response.status === 200) {
+                    document.getElementById("verificationModal").style.display = "flex";
+                } else if (response.status === 401) {
+                    alert("ERROR: Verify that the token is missing, please refresh the page and try again.")
+                } else {
+                    const registerResponse = await response.json();
+                    alert("ERROR: " + registerResponse["response"])
+                }
+            }
+        }
+    )
+
+    document.getElementById("verificationCode").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const verifyCode = document.getElementById("code").value;
+            console.log(email, verifyCode)
+            const verifyRequestBody = JSON.stringify({"code": verifyCode})
+            const verifyResponse = await postRequestServer("/register/verify_code", email, verifyRequestBody)
+            if (verifyResponse.status === 200) {
+                const createResponse = await postRequestServer("/register/create_user", email, null)
+                if (createResponse.status === 302) {
+                    window.location.href = "/login"
+                } else {
+                    const createData = await createResponse.json();
+                    alert("ERROR: " + createData["response"])
+                }
+            } else {
+                const registerData = await verifyResponse.json();
+                alert("ERROR: " + registerData["response"])
+            }
+    }
+    )
+</script>
+<script src="templates/js/login&register.js"></script>
+
+{{ template "footer" . }}
+

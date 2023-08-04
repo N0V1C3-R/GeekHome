@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{{ template "header" . }}
+
+<link rel="stylesheet" href="templates/css/home.css">
+
+{{ template "middle" . }}
+
+    <div class="terminal">
+        <div class="command">
+            <span class="user__info">{{.user}}@{{.ip}}&nbsp;/&nbsp;$&nbsp;</span>
+            <input type="text" class="command__input">
+        </div>
+    </div>
+    <script src="templates/js/home.js"></script>
+
+{{ template "footer" . }}

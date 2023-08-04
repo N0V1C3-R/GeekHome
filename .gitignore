@@ -1,0 +1,8 @@
+config/.env_*
+*_test.go
+docker-compose.dev.yml
+
+# Editor directories and files
+/.idea
+/.vscode
+.DS_Store

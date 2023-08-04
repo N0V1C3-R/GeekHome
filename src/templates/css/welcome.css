@@ -1,0 +1,15 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+h1 {
+    font-family: '得意黑', system-ui;
+    font-size: 6em;
+    background: linear-gradient(to bottom, black, white);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

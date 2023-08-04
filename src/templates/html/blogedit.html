@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+{{ template "header" . }}
+
+<link rel="stylesheet" href="/templates/lib/editormd/style.css"/>
+<link rel="stylesheet" href="/templates/lib/editormd/editormd.css"/>
+<link rel="stylesheet" href="/templates/css/blogedit.css"/>
+
+{{ template "middle" . }}
+
+<div id="blog-navigation">
+    <div id="blog-title">
+        {{if eq .title ""}}
+        <input type="text" class="titleName" placeholder="Please enter a title" oninput="validateTitle()" required>
+        {{else}}
+        <input type="text" class="titleName" placeholder="Please enter a title" value="{{.title}}" oninput="validateTitle()" required>
+        {{end}}
+    </div>
+    <div id="classification">
+        <select id="dropdown">
+            {{.classificationHTML}}
+        </select>
+    </div>
+    <div class="switch">
+        <label>
+            {{if .isAnonymous}}
+            <input type="checkbox" class="toggle" value=true checked>
+            <span class="slider"></span>
+            <span class="label">
+                Anon
+            </span>
+            {{else}}
+            <input type="checkbox" class="toggle" value=false>
+            <span class="slider"></span>
+            <span class="label">
+                Public
+            </span>
+            {{end}}
+        </label>
+    </div>
+    <input id="save-btn" type="submit" value="Save">
+</div>
+
+<div id="layout">
+
+    <div id="editor-md">
+        <textarea id="text" style="display:none;">{{.content}}</textarea>
+    </div>
+    <div style="width:90%;margin: 10px auto;">
+        <button id="save" onclick="saveData()" style="padding: 5px;">save</button>
+    </div>
+
+</div>
+
+<div id="nameModal" style="display: none;">
+    <form id="name" method="post">
+        <div class="close-button" onclick="closeNameModal()"></div>
+        <div class="form-input">
+            {{if eq .title ""}}
+            <input type="text" class="titleName" oninput="validateTitle()" required>
+            <label for="name" class="input-label">Enter your blog title</label>
+            {{else}}
+            <input type="text" class="titleName" value="{{.title}}" oninput="validateTitle()" required>
+            {{end}}
+        </div>
+        <div class="form-output">
+            <input id="submitButton" type="submit" value="Commit">
+        </div>
+    </form>
+</div>
+
+<script src="/templates/js/JQuery.js"></script>
+<script src="/templates/lib/editormd/editormd.js"></script>
+<script src="/templates/js/blogedit.js"></script>
+
+</body>
+
+</html>

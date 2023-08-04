@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>极客对比</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #111;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .options label {
+      font-size: 14px;
+    }
+
+    .options input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    .text-area {
+      width: 100%;
+      height: 200px;
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .button-container button {
+      padding: 10px 20px;
+      background-color: #009688;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="options">
+    <label>
+      <input type="radio" name="mode" value="text" checked> 对比文本数据
+    </label>
+    <label>
+      <input type="radio" name="mode" value="file"> 对比文本文件
+    </label>
+  </div>
+  <textarea id="text1" class="text-area" placeholder="输入文本数据或选择文件"></textarea>
+  <textarea id="text2" class="text-area" placeholder="输入文本数据或选择文件"></textarea>
+  <div class="button-container">
+    <button id="compareBtn">开始对比</button>
+  </div>
+  <div id="result" class="result"></div>
+</div>
+
+<script>
+  const compareBtn = document.getElementById("compareBtn");
+  const resultDiv = document.getElementById("result");
+
+  compareBtn.addEventListener("click", function() {
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const text1 = document.getElementById("text1").value;
+    const text2 = document.getElementById("text2").value;
+
+    if (mode === "text") {
+      // 对比文本数据
+      compareTexts(text1, text2);
+    } else if (mode === "file") {
+      // 对比文本文件
+      // 这里可以添加文件选择的逻辑，读取文件内容并调用 compareTexts 函数进行对比
+      // 以下是示例代码
+      const fileInput1 = document.createElement("input");
+      fileInput1.type = "file";
+      fileInput1.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileContent = e.target.result;
+          compareTexts(fileContent, text2);
+        };
+        reader.readAsText(file);
+      });
+      fileInput1.click();
+    }
+  });
+
+  function compareTexts(text1, text2) {
+    // 调用后端接口进行文本对比
+    // 这里使用 fetch 进行请求，根据实际情况修改 URL 和请求方式
+    fetch("/compare", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text1: text1,
+        text2: text2
+      })
+    })
+            .then(response => response.json())
+            .then(result => {
+              // 显示比较结果
+              resultDiv.textContent = "比较结果: " + result.result;
+            })
+            .catch(error => {
+              console.error("比较请求失败:", error);
+            });
+  }
+</script>
+</body>
+</html>

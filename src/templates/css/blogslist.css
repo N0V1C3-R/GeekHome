@@ -1,0 +1,118 @@
+body {
+    font-family: "得意黑", system-ui;
+    background-color: #f5f5f5;
+}
+
+#blog-navigation {
+    display: flex;
+    align-content: center;
+    justify-content: flex-end;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    border-radius: 0;
+    background: #1e1e1e;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    margin-left: -8px;
+    padding: 2px;
+    height: 45px
+}
+
+#create-btn {
+    position: absolute;
+    font-family: 得意黑 system-ui;
+    font-size: 16px;
+    width: 88px;
+    height: 90%;
+    right: 66px;
+    transform: translateY(0%);
+    background-color: #39511f;
+    margin-top: 1px;
+    margin-bottom: -1px;
+    border: 0;
+    border-radius: 6px;
+}
+
+#create-btn:hover {
+    background-color: #002FA7;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.blog-list {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.blog-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.blog-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.blog-meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.blog-content {
+    font-size: 14px;
+    color: #333;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.pagination a {
+    padding: 5px 10px;
+    background-color: #eee;
+    color: #333;
+    text-decoration: none;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+#listbox {
+    position: fixed;
+    top: 55px;
+    width: 100%;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    transform: translateX(10%);
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    padding: 5px;
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.filter-select {
+    padding: 5px;
+}
+
+.blog-list {
+    transform: translateX(5%);
+    width: 90%;
+}

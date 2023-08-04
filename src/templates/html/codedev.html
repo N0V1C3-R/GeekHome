@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="templates/lib/codemirror/codemirror.css">
+<link rel="stylesheet" href="templates/lib/codemirror/darcula.css">
+<link rel="stylesheet" href="templates/css/codedev.css">
+<script src="templates/lib/codemirror/codemirror.js"></script>
+{{ template "header" . }}
+
+{{ template "middle" . }}
+
+<div id="header">
+  <select id="language" onchange="loadScript()">
+    {{.languageHTML}}
+  </select>
+  <select id="indentType" onchange="loadScript()">
+    {{.indentTypeHTML}}
+  </select>
+  <select id="indentUnit" onchange="loadScript()">
+    {{.indentUnitHTML}}
+  </select>
+</div>
+<div id="content">
+  <textarea id="code"></textarea>
+  <button id="run-btn" onclick="postCodeMsg()">Run</button>
+  <pre id="output"></pre>
+</div>
+
+<script src="templates/js/code_dev.js"></script>
+
+{{ template "footer" . }}

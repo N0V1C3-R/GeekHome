@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Markdown Diff</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #markdown-container {
+      display: flex;
+      height: 66.66%;
+    }
+
+    #markdown-left,
+    #markdown-right {
+      flex: 1;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    #diff-container {
+      height: 33.33%;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+<div id="markdown-container">
+  <textarea id="markdown-left" spellcheck="false" placeholder="Left Markdown"></textarea>
+  <textarea id="markdown-right" spellcheck="false" placeholder="Right Markdown"></textarea>
+</div>
+
+<div id="diff-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html.min.js"></script>
+<script>
+  // 获取左侧和右侧的 Markdown 输入框元素
+  var markdownLeft = document.getElementById('markdown-left');
+  var markdownRight = document.getElementById('markdown-right');
+
+  // 获取用于展示差异的容器元素
+  var diffContainer = document.getElementById('diff-container');
+
+  // 监听 Markdown 输入框的输入事件
+  markdownLeft.addEventListener('input', generateDiff);
+  markdownRight.addEventListener('input', generateDiff);
+
+  // 生成差异化的 HTML
+  function generateDiff() {
+    var leftMarkdown = markdownLeft.value;
+    var rightMarkdown = markdownRight.value;
+
+    // 生成差异化的 HTML
+    var diffHtml = Diff2Html.html(Diff2Html.diff(leftMarkdown, rightMarkdown));
+    console.log(diffHtml)
+
+    // 将差异化的 HTML 插入到容器元素中
+    diffContainer.innerHTML = diffHtml;
+  }
+</script>
+</body>
+</html>

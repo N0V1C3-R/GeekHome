@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{{ template "header" . }}
+
+    <link rel="stylesheet" href="/templates/css/login&register.css">
+
+{{ template "middle" . }}
+
+<div class="container">
+    <h1 class="topic">Welcome back</h1>
+    <form method="post" id="loginForm">
+        <div class="form-input">
+            <input type="text" id="email" name="email" required>
+            <label for="email" class="input-label">Email</label>
+        </div>
+        <div class="form-input">
+            <input type="password" id="password" name="password" required>
+            <label for="password" class="input-label">Password</label>
+
+        </div>
+        <div class="form-output">
+            <input type="submit" value="Login">
+        </div>
+        <div class="account-exists">Don't have an account? <a class="no-underline" href="/register" methods="get">Sign up</a></div>
+        <div class="visitor"><a class="no-underline" href="/" methods="get">Visitor Use</a></div>
+    </form>
+</div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("/login", {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"email": email, "password": password})
+        })
+        if (response.status === 302) {
+            window.location.href = "/hello"
+        } else if (response.status === 400) {
+            alert("ERROR: Password input error!")
+        } else if (response.status === 401) {
+            alert("ERROR: Verify that the token is missing, please refresh the page and try again.")
+        }
+    });
+
+</script>
+<script src="templates/js/login&register.js"></script>
+
+{{ template "footer" . }}

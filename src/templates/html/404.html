@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{{ template "header" . }}
+
+{{ template "middle" . }}
+
+<div style="text-align: center;">
+    <h1 style="font-family: '得意黑', system-ui; font-size: 4rem; margin-top: 2rem;">{{.text}}</h1>
+    <p style="font-family: '得意黑', system-ui; font-size: 2rem; margin-top: 2rem;">
+        Redirecting to Home in <span id="countdown">5</span> seconds...
+    </p>
+    <script>
+        let countdown = document.getElementById("countdown");
+        let seconds = 5;
+        let intervalId = setInterval(() => {
+            if (seconds <= 1) {
+                clearInterval(intervalId);
+                window.location.href = "/";
+            } else {
+                seconds--;
+                countdown.innerHTML = seconds.toString();
+            }
+        }, 1000);
+    </script>
+</div>
+
+{{ template "footer" . }}
