@@ -12,31 +12,30 @@ type Base64Server struct {
 }
 
 func (bs *Base64Server) ParseCommand(stdin string) {
+	bs.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
 	if len(parts) == 0 {
-		bs.Options = make(map[string]string)
 		bs.Options["warn"] = "WARRING: Please enter the text to be encoded or decoded."
 		return
 	}
-	bs.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if bs.Required["text"] == "" {
+		if bs.Options["text"] == "" {
 			switch strings.ToUpper(arg) {
 			case "-D", "-DECODE":
-				bs.Required["mode"] = "DECODE"
+				bs.Options["mode"] = "DECODE"
 				continue
 			case "-E", "-ENCODE":
-				bs.Required["mode"] = "ENCODE"
+				bs.Options["mode"] = "ENCODE"
 				continue
 			}
 		}
-		bs.Required["text"] += arg + " "
+		bs.Options["text"] += arg + " "
 	}
-	bs.Required["text"] = strings.TrimRight(bs.Required["text"], " ")
-	if bs.Required["mode"] == "" {
-		bs.Required["mode"] = "ENCODE"
+	bs.Options["text"] = strings.TrimRight(bs.Options["text"], " ")
+	if bs.Options["mode"] == "" {
+		bs.Options["mode"] = "ENCODE"
 	}
 }
 
@@ -46,13 +45,13 @@ func (bs *Base64Server) ExecuteCommand(c *gin.Context) {
 		return
 	}
 
-	mode := bs.Required["mode"]
+	mode := bs.Options["mode"]
 	modeMap := map[string]interface{}{
 		"ENCODE": base64Encode,
 		"DECODE": base64Decode,
 	}
 	function := modeMap[mode]
-	res := utils.CallFunction(function, bs.Required["text"])
+	res := utils.CallFunction(function, bs.Options["text"])
 	c.JSON(http.StatusOK, gin.H{"response": res})
 }
 

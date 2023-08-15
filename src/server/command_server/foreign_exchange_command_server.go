@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-type CurrencyConvertCommand struct {
+type CurrencyConvertServer struct {
 	BaseCommand
 }
 
@@ -73,10 +73,10 @@ var supportForeignISO = []string{
 	"THB",
 }
 
-func (ccc *CurrencyConvertCommand) ParseCommand(stdin string) {
+func (ccs *CurrencyConvertServer) ParseCommand(stdin string) {
+	ccs.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	ccc.Required = make(map[string]string)
 	var (
 		sourceCurrency string
 		targetCurrency string
@@ -90,7 +90,7 @@ func (ccc *CurrencyConvertCommand) ParseCommand(stdin string) {
 			if i+1 < len(parts) {
 				i++
 				targetCurrency, targetValid = validationSupportCurrency(strings.ToUpper(parts[i]))
-				ccc.Required["targetCurrency"] = targetCurrency
+				ccs.Options["targetCurrency"] = targetCurrency
 			} else {
 				targetValid = false
 			}
@@ -99,7 +99,7 @@ func (ccc *CurrencyConvertCommand) ParseCommand(stdin string) {
 			if i+1 < len(parts) {
 				i++
 				sourceCurrency, sourceValid = validationSupportCurrency(strings.ToUpper(parts[i]))
-				ccc.Required["sourceCurrency"] = sourceCurrency
+				ccs.Options["sourceCurrency"] = sourceCurrency
 			} else {
 				sourceValid = false
 			}
@@ -115,45 +115,45 @@ func (ccc *CurrencyConvertCommand) ParseCommand(stdin string) {
 			if valid {
 				if sourceCurrency == "" {
 					sourceCurrency = currency
-					ccc.Required["sourceCurrency"] = sourceCurrency
+					ccs.Options["sourceCurrency"] = sourceCurrency
 					continue
 				} else if targetCurrency == "" {
 					targetCurrency = currency
-					ccc.Required["targetCurrency"] = targetCurrency
+					ccs.Options["targetCurrency"] = targetCurrency
 					continue
 				}
 			} else {
 				return
 			}
 		}
-		ccc.Required["amount"] += numStr
+		ccs.Options["amount"] += numStr
 	}
-	_, err := strconv.ParseFloat(ccc.Required["amount"], 64)
+	_, err := strconv.ParseFloat(ccs.Options["amount"], 64)
 	if err != nil {
-		ccc.Required["amount"] = ""
+		ccs.Options["amount"] = ""
 	}
 	if sourceCurrency == "" {
-		ccc.Required["sourceCurrency"] = "CNY"
+		ccs.Options["sourceCurrency"] = "CNY"
 	}
 	if targetCurrency == "" {
-		ccc.Required["targetCurrency"] = "USD"
+		ccs.Options["targetCurrency"] = "USD"
 	}
 }
 
-func (ccc *CurrencyConvertCommand) ExecuteCommand(c *gin.Context) {
-	sourceCurrency := ccc.Required["sourceCurrency"]
+func (ccs *CurrencyConvertServer) ExecuteCommand(c *gin.Context) {
+	sourceCurrency := ccs.Options["sourceCurrency"]
 	if sourceCurrency == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unsupported source currency exchange rate conversions."})
 		return
 	}
 
-	targetCurrency := ccc.Required["targetCurrency"]
+	targetCurrency := ccs.Options["targetCurrency"]
 	if targetCurrency == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unsupported target currency exchange rate conversions."})
 		return
 	}
 
-	amountStr := ccc.Required["amount"]
+	amountStr := ccs.Options["amount"]
 	if amountStr == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Amount that cannot be parsed"})
 		return

@@ -10,6 +10,11 @@ import (
 func init() {
 	_, file, _, _ := runtime.Caller(0)
 	_ = os.Chdir(filepath.Dir(file))
-	configPath := filepath.Join("..", "..", "config", ".env_local")
+	var configPath string
+	if os.Getenv("ENVIRONMENT") == "local" {
+		configPath = filepath.Join("..", "..", "config", ".env_local")
+	} else {
+		configPath = filepath.Join("..", "..", "config", ".env")
+	}
 	_ = godotenv.Load(configPath)
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/snowflake"
 	"github.com/dgrijalva/jwt-go"
+	"math/big"
 	"math/rand"
 	"os"
 	"reflect"
@@ -88,6 +89,39 @@ func IsBase64String(input string) bool {
 	base64Pattern := "^[A-Za-z0-9+/]*={0,2}$"
 	match := CheckStringWithRegex(input, base64Pattern)
 	return match
+}
+
+func IsNumeric(input string) bool {
+	regExp := regexp.MustCompile(`^[0-9]+$`)
+
+	return regExp.MatchString(input)
+}
+
+func ConvertWithSign(number string, fromBase, toBase int) (string, error) {
+	n := new(big.Int)
+	_, success := n.SetString(number, fromBase)
+	if !success {
+		return "", fmt.Errorf("invalid number in base %d: %s", fromBase, number)
+	}
+
+	sign := ""
+	if n.Sign() == -1 {
+		sign = "-"
+		n.Abs(n)
+	}
+
+	result := ""
+	for n.Sign() > 0 {
+		remainder := new(big.Int)
+		n.QuoRem(n, big.NewInt(int64(toBase)), remainder)
+		result = string(rune('0'+int(remainder.Int64()))) + result
+	}
+
+	if result == "" {
+		result = "0"
+	}
+
+	return sign + result, nil
 }
 
 func GenerateVerificationCode() string {

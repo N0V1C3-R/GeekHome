@@ -34,7 +34,7 @@ func (user *UserEntity) CreateUser(username, email, password string) UserEntity 
 }
 
 func (user *UserEntity) InitPassword() string {
-	password := utils.GeneratePassword()
+	password := utils.GeneratePassword(15, 12)
 	user.Password = utils.EncryptString(password)
 	user.UpdatedAt = utils.ConvertToMilliTime(utils.GetCurrentTime())
 	return password

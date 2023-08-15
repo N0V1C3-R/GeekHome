@@ -7,15 +7,19 @@ import (
 )
 
 var (
-	once    sync.Once
-	db      *gorm.DB
-	baseDao *BaseDao
+	once            sync.Once
+	roDb            *gorm.DB
+	db              *gorm.DB
+	baseDao         *BaseDao
+	readOnlyBaseDao *BaseDao
 )
 
 func init() {
 	once.Do(
 		func() {
-			db, _ = database.ConnectDB(database.Mysql)
+			roDb, _ = database.ConnectDB()
+			db, _ = database.ConnectDB()
 			baseDao = NewBaseDao()
+			readOnlyBaseDao = NewReadOnlyBaseDao()
 		})
 }

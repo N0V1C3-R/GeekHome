@@ -12,6 +12,10 @@ func NewBaseDao() *BaseDao {
 	return &BaseDao{db}
 }
 
+func NewReadOnlyBaseDao() *BaseDao {
+	return &BaseDao{roDb}
+}
+
 func (dao *BaseDao) GetOne(model interface{}, filter interface{}) interface{} {
 	result := dao.Where(filter).Find(model)
 	if result.RowsAffected == 0 {

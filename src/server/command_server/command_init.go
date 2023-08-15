@@ -19,8 +19,7 @@ type CommandRequest struct {
 }
 
 type BaseCommand struct {
-	Options  map[string]string
-	Required map[string]string
+	Options map[string]string
 }
 
 var (
@@ -31,20 +30,31 @@ var (
 func init() {
 	_, file, _, _ := runtime.Caller(0)
 	_ = os.Chdir(filepath.Dir(file))
-	configPath := filepath.Join("..", "..", "config", ".env_local")
+	var configPath string
+	if os.Getenv("ENVIRONMENT") == "local" {
+		configPath = filepath.Join("..", "..", "config", ".env_local")
+	} else {
+		configPath = filepath.Join("..", "..", "config", ".env")
+	}
 	_ = godotenv.Load(configPath)
 
 	deepLAPIURL = os.Getenv("DEEPL_URL")
 
 	commands = map[string]reflect.Type{
+		// Help
+		"help": reflect.TypeOf(&HelpServer{}),
+
+		// Man
+		"man": reflect.TypeOf(&ManServer{}),
+
 		// Translation
-		"translate": reflect.TypeOf(&TranslateCommand{}),
-		"trans":     reflect.TypeOf(&TranslateCommand{}),
-		"ts":        reflect.TypeOf(&TranslateCommand{}),
+		"translate": reflect.TypeOf(&TranslateServer{}),
+		"trans":     reflect.TypeOf(&TranslateServer{}),
+		"ts":        reflect.TypeOf(&TranslateServer{}),
 
 		// Exchange rate conversion
-		"fx": reflect.TypeOf(&CurrencyConvertCommand{}),
-		"ex": reflect.TypeOf(&CurrencyConvertCommand{}),
+		"fx": reflect.TypeOf(&CurrencyConvertServer{}),
+		"ex": reflect.TypeOf(&CurrencyConvertServer{}),
 
 		// Morse code encoding
 		"morse": reflect.TypeOf(&MorseServer{}),
@@ -55,13 +65,16 @@ func init() {
 		"base64": reflect.TypeOf(&Base64Server{}),
 		"b64":    reflect.TypeOf(&Base64Server{}),
 
+		// Base Conversion
+		"bc": reflect.TypeOf(&BaseConversionServer{}),
+
 		// Time to Timestamp
 		"tts": reflect.TypeOf(&TimeConvertServer{}),
 		// Timestamp to time
 		"tst": reflect.TypeOf(&TimestampConvertServer{}),
 
-		// Access to the online IDE interface
-		"codev": reflect.TypeOf(&CodeVServer{}),
+		// Generate a password
+		"genpwd": reflect.TypeOf(&GenpwdServer{}),
 
 		// Modify username
 		"rename": reflect.TypeOf(&RenameServer{}),
@@ -74,5 +87,24 @@ func init() {
 		"upk": reflect.TypeOf(&UpdateAPIKeyServer{}),
 		// Disable 3rd-party service API
 		"ban": reflect.TypeOf(&BanAPIKeyServer{}),
+
+		// Access to the online IDE interface
+		"codev": reflect.TypeOf(&CodeVServer{}),
+
+		// Visit the blog
+		"blogs": reflect.TypeOf(&BlogServer{}),
+
+		// Open a link
+		"open": reflect.TypeOf(&OpenServer{}),
+
+		// Google search
+		"google": reflect.TypeOf(&GoogleServer{}),
+		"go":     reflect.TypeOf(&GoogleServer{}),
+
+		// Bing search
+		"bing": reflect.TypeOf(&BingServer{}),
+
+		// GitHub search
+		"github": reflect.TypeOf(&GitHubServer{}),
 	}
 }

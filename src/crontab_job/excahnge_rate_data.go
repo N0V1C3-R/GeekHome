@@ -37,7 +37,7 @@ var (
 
 func init() {
 	once.Do(func() {
-		db, _ = database.ConnectDB(database.Mysql)
+		db, _ = database.ConnectDB()
 	})
 }
 

@@ -76,9 +76,9 @@ func CodeDevGetHandle(c *gin.Context) {
 		return
 	}
 	c.SetCookie(cookieName, token, cookieMaxAge, "/", "", false, true)
-	languageID := c.Param("languageID")
-	indentType := c.Param("indentType")
-	indentUnit := c.Param("indentUnit")
+	languageID := c.Query("languageID")
+	indentType := c.Query("indentType")
+	indentUnit := c.Query("indentUnit")
 	languageHTML := generateLanguageSelectHTML(languageID)
 	indentTypeHTML := generateIndentTypeSelectHTML(indentType)
 	indentUnitHTML := generateIndentUnitSelectHTML(indentUnit)

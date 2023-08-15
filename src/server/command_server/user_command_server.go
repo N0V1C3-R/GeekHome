@@ -42,14 +42,14 @@ var supportServices = []model.ThirdPartyServiceName{
 }
 
 func (rs *RenameServer) ParseCommand(stdin string) {
+	rs.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	rs.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		rs.Required["rename"] += arg + " "
+		rs.Options["rename"] += arg + " "
 	}
-	rs.Required["rename"] = strings.TrimRight(rs.Required["rename"], " ")
+	rs.Options["rename"] = strings.TrimRight(rs.Options["rename"], " ")
 }
 
 func (rs *RenameServer) ExecuteCommand(c *gin.Context) {
@@ -58,7 +58,7 @@ func (rs *RenameServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: This command needs to be used while logged in."})
 		return
 	}
-	newUserName := rs.Required["rename"]
+	newUserName := rs.Options["rename"]
 	oldUsername := userAuth.Username
 	if newUserName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: Please enter the user name to be changed."})
@@ -84,17 +84,17 @@ func (rs *RenameServer) ExecuteCommand(c *gin.Context) {
 }
 
 func (adk *AddAPIKeyServer) ParseCommand(stdin string) {
+	adk.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	adk.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if adk.Required["serviceName"] == "" {
-			adk.Required["serviceName"] = arg
+		if adk.Options["serviceName"] == "" {
+			adk.Options["serviceName"] = arg
 			continue
 		}
-		if adk.Required["APIKey"] == "" {
-			adk.Required["APIKey"] = arg
+		if adk.Options["APIKey"] == "" {
+			adk.Options["APIKey"] = arg
 			continue
 		}
 	}
@@ -106,8 +106,8 @@ func (adk *AddAPIKeyServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: This command needs to be used while logged in."})
 		return
 	}
-	serviceName := adk.Required["serviceName"]
-	APIKey := adk.Required["APIKey"]
+	serviceName := adk.Options["serviceName"]
+	APIKey := adk.Options["APIKey"]
 	if serviceName == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Please specify the API service name to be added."})
 		return
@@ -126,13 +126,13 @@ func (adk *AddAPIKeyServer) ExecuteCommand(c *gin.Context) {
 }
 
 func (fdk *FindAPIKeyServer) ParseCommand(stdin string) {
+	fdk.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	fdk.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if fdk.Required["serviceName"] == "" {
-			fdk.Required["serviceName"] = arg
+		if fdk.Options["serviceName"] == "" {
+			fdk.Options["serviceName"] = arg
 			continue
 		}
 	}
@@ -144,7 +144,7 @@ func (fdk *FindAPIKeyServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: This command needs to be used while logged in."})
 		return
 	}
-	serviceName := fdk.Required["serviceName"]
+	serviceName := fdk.Options["serviceName"]
 	if serviceName == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Please specify the API service name to be queried."})
 		return
@@ -164,17 +164,17 @@ func (fdk *FindAPIKeyServer) ExecuteCommand(c *gin.Context) {
 }
 
 func (upk *UpdateAPIKeyServer) ParseCommand(stdin string) {
+	upk.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	upk.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if upk.Required["serviceName"] == "" {
-			upk.Required["serviceName"] = arg
+		if upk.Options["serviceName"] == "" {
+			upk.Options["serviceName"] = arg
 			continue
 		}
-		if upk.Required["APIKey"] == "" {
-			upk.Required["APIKey"] = arg
+		if upk.Options["APIKey"] == "" {
+			upk.Options["APIKey"] = arg
 			continue
 		}
 	}
@@ -186,8 +186,8 @@ func (upk *UpdateAPIKeyServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: This command needs to be used while logged in."})
 		return
 	}
-	serviceName := upk.Required["serviceName"]
-	APIKey := upk.Required["APIKey"]
+	serviceName := upk.Options["serviceName"]
+	APIKey := upk.Options["APIKey"]
 	if serviceName == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Please specify the API service name to be updated."})
 		return
@@ -206,17 +206,17 @@ func (upk *UpdateAPIKeyServer) ExecuteCommand(c *gin.Context) {
 }
 
 func (ban *BanAPIKeyServer) ParseCommand(stdin string) {
+	ban.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	ban.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if ban.Required["serviceName"] == "" {
-			ban.Required["serviceName"] = arg
+		if ban.Options["serviceName"] == "" {
+			ban.Options["serviceName"] = arg
 			continue
 		}
-		if ban.Required["APIKey"] == "" {
-			ban.Required["APIKey"] = arg
+		if ban.Options["APIKey"] == "" {
+			ban.Options["APIKey"] = arg
 			continue
 		}
 	}
@@ -228,7 +228,7 @@ func (ban *BanAPIKeyServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: This command needs to be used while logged in."})
 		return
 	}
-	serviceName := ban.Required["serviceName"]
+	serviceName := ban.Options["serviceName"]
 	if serviceName == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Please specify the API service name to be updated."})
 		return

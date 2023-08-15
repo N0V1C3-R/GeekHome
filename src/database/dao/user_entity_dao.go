@@ -4,7 +4,6 @@ import (
 	"WebHome/src/database/model"
 	"WebHome/src/utils"
 	"gorm.io/gorm"
-	"log"
 )
 
 type UserEntityDao struct {
@@ -15,6 +14,11 @@ type UserEntityDao struct {
 func NewUserEntityDao() *UserEntityDao {
 	schema := db.Table(model.NewUserEntity().TableName())
 	return &UserEntityDao{*baseDao, schema}
+}
+
+func NewReadOnlyUserEntityDao() *UserEntityDao {
+	schema := db.Table(model.NewUserEntity().TableName())
+	return &UserEntityDao{*readOnlyBaseDao, schema}
 }
 
 func (dao *UserEntityDao) CreateSuperAdminUser(userModel model.UserEntity) {
@@ -45,11 +49,7 @@ func (dao *UserEntityDao) CreateClientUser(userModel model.UserEntity) *model.Us
 func (dao *UserEntityDao) GetUser(email, password string) (user model.UserEntity) {
 	condition := "email = ? AND password = ? AND active = ? AND deleted_at = ?"
 	values := []interface{}{email, password, 1, 0}
-	log.Println("----------------------------------------------")
-	log.Println(values)
 	dao.Where(condition, values...).First(&user)
-	log.Println(user.Username)
-	log.Println("----------------------------------------------")
 	return
 }
 

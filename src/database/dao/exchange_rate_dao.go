@@ -15,6 +15,11 @@ func NewExchangeRateDao() *ExchangeRateDao {
 	return &ExchangeRateDao{*baseDao, schema}
 }
 
+func NewReadOnlyExchangeRateDao() *ExchangeRateDao {
+	schema := db.Table(model.NewExchangeRate().TableName())
+	return &ExchangeRateDao{*readOnlyBaseDao, schema}
+}
+
 func (dao *ExchangeRateDao) GetLastTradingDay() (LastTradingDay string) {
 	err := dao.Schema.Select("max(trade_date)").Row().Scan(&LastTradingDay)
 	if err != nil {
