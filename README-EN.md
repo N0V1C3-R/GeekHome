@@ -51,7 +51,7 @@ Step 6: Click to [register](http://localhost:5466/register "link") a super admin
 >
 > `clear` Clear the screen
 >
-> `trans [-s SOURCE_LANG] [-t TARGET_LANG] <TEXT>` Translation commands, -s and -t are optional, used to specify the source and target languages respectively, the source language is automatically detected if not specified, and the target language defaults to *EN-US*.
+> `trans [-t TARGET_LANG] <TEXT>` Translation commands, -t is optional, used to specify the target language, the source language is automatically detected, and the target language defaults to *English (American)*.
 >
 > `fx [-s SOURCE_CURRENCY] [-t TARGET_CURRENCY] <AMOUNT>` Exchange rate conversion commands, -s and -t are optional, used to specify the source and target currencies respectively, the default values are CNY and USD, respectively, and the data source *[China Foreign Exchange Trade System](https://www.chinamoney.com.cn/ "link")*
 >
@@ -61,17 +61,21 @@ Step 6: Click to [register](http://localhost:5466/register "link") a super admin
 >
 > `b64 [-d | -e] <TEXT>` Base64 encoding and decoding commands, use the -d parameter for Base64 decoding of text, use -e for Base64 encoding of text, the default is Base64 encoding
 >
+> `bc [-sS SOURCE_BASE] [-tT TARGET_BASE] <VALUE>` Binary conversion command, The -s and -t parameters are used to specify the source and target binaries, respectively
+> 
 > `tts [--ms] [--tz TIMEZONE] [TIME]` Time to timestamp command, --ms specifies that the time conversion precision is milliseconds, the default is seconds, the --tz parameter specifies the time zone
 >
 > `tst [--ms] [--tz TIMEZONE] [TIMESTAMP]` Timestamp to time command, --ms specifies that the time conversion precision is milliseconds, the default is seconds, the --tz parameter specifies the time zone
 >
+> `genpwd [-lunsLUNS] [PASSWORD_LENGTH]` Password generation Command, -l, u, n and s are used to specify whether the password needs to contain lowercase letters, uppercase letters, numbers and special characters, the default all contain, password_length parameter is used to specify the length of the password, the default 12 characters
+> 
 > `codev [LANG] [-t | -s] [INDENT_UNIT]` Enter the codev online IDE page command, LANG to specify the development language (default Python3), -t and -s to specify the indentation type (default Space indentation), INDENT_UNIT to specify the indentation length (default indentation 4 characters)
 >
 > `rename <NEW_USERNAME>` Modify the username, the default username is the e-mail address used for creation (used in the login state)
 >
 > `adk <SERVICE_NAME> <API_KEY>` Adding a private API Key to the service (to be used while logged in)
 >
-> `fdk <SERCICE_NAME>` Find the private API Key set by a service (used while logged in)
+> `fdk <SERVICE_NAME>` Find the private API Key set by a service (used while logged in)
 >
 > `upk <SERVICE_NAME>` Updating the private API Key set by a service (used in the logged-in state)
 >
@@ -79,9 +83,9 @@ Step 6: Click to [register](http://localhost:5466/register "link") a super admin
 >
 > `open [-r | -n] <URL>` Open a link command, -r and -n for the current tab jump and new tab open, the default for the new tab open
 >
-> `login` Command to jump to the login page (the function of this command will be extended in the future, so that you can directly use the command to perform login operations)
+> `login` Command to jump to the login page
 >
-> `register` Command to jump to the registration page (the function of this command will be extended in the future, so that you can directly use the command to perform the registration operation)
+> `register` Command to jump to the registration page
 >
 > `exit` Logout command, use to log out when you are logged in, or close the window when you are not logged in.
 >
@@ -91,7 +95,7 @@ Step 6: Click to [register](http://localhost:5466/register "link") a super admin
 >
 > `github [CONTENT]` GitHub search command, when used without the CONTENT parameter it opens in a new tab *[GitHub](https://github.com/ "link")* , with CONTENT it searches for content directly using GitHub and opens in a new tab
 >
-> `blog` Go to the blog list page
+> `blog [-a AUTHOR] [-t TITLE]` Go to the blog list page, carry parameters -a and -t for searching specific users and titles with keywords, respectively
 >
 > ![image](./assets/command_service_demonstration.png)
 >
