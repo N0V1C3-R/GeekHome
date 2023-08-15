@@ -1,4 +1,5 @@
 config/.env_*
+test/
 *_test.go
 docker-compose.dev.yml
 

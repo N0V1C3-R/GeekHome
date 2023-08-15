@@ -7,6 +7,8 @@ COPY . .
 ARG GOPROXY=https://goproxy.cn,direct
 ENV GOPROXY=$GOPROXY
 
+ENV ENVIRONMENT=Prod
+
 RUN go build -o main ./src/main
 
 EXPOSE 5466

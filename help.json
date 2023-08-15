@@ -1,0 +1,804 @@
+[
+  {
+    "commandName": "help",
+    "aliasNames": [],
+    "profile": "Display a basic overview of all commands",
+    "detail": {
+      "usage": "help",
+      "desc": "Display a basic overview of all commands.",
+      "options": {},
+      "examples": [],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "man",
+    "aliasNames": [],
+    "profile": "Display a detailed description of the specified command",
+    "detail": {
+      "usage": "man <COMMAND>",
+      "desc": "Use the man command to view detailed descriptions of a command's usage, parameter descriptions, etc.",
+      "options": {
+        "command": [
+          "required",
+          "If the command is available, the details of the command will be displayed."
+        ]
+      },
+      "examples": [],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "clear",
+    "aliasNames": [],
+    "profile": "Clear the screen",
+    "detail": {
+      "usage": "clear",
+      "desc": "Clear clears your screen if this is possible.\n Clear ignores any command-line parameters that may be present.",
+      "options": {},
+      "examples": [],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "trans",
+    "aliasNames": ["translate", "ts"],
+    "profile": "Text translation",
+    "detail": {
+      "usage": "trans [-tT TARGET_LANG] <TEXTS>",
+      "desc": "The 'trans' command enables you to translate text from one language to another using the specified target language. It leverages the power of the DeepL translation service to provide accurate translations. This site will provide a portion of free translation quota every month, it is recommended that users add through the DeepL official access to private API Key.",
+      "options": {
+        "-t, -T TARGET_LANG": [
+          "optional",
+          "The language into which the text should be translated. Defaults to EN-US - English(American). Options currently available: ",
+          "BG - Bulgarian",
+          "CS - Czech",
+          "DA - Danish",
+          "DE - German",
+          "EL - Greek",
+          "EN - English(unspecified variant for backward compatibility; please select EN-GB or EN-US instead)",
+          "EN-GB - English(British)",
+          "EN-US - English(American)",
+          "ES - Spanish",
+          "ET - Estonian",
+          "FI - Finish",
+          "FR - French",
+          "HU - Hungarian",
+          "ID - Indonesian",
+          "IT - Italian",
+          "JA - Japanese",
+          "KO - Korean",
+          "LT - Lithuanian",
+          "LV - Latvian",
+          "NB - Norwegian(Bokmål)",
+          "NL - Dutch",
+          "PL - Polish",
+          "PT - Portuguese",
+          "PT-BR - Portuguese(Brazilian)",
+          "PT-PT - Portuguese(all Portuguese varieties excluding Brazilian Portuguese)",
+          "RO - Romanian",
+          "RU - Russian",
+          "SK - Slovak",
+          "SL - Slovenian",
+          "SV - Swedish",
+          "TR - Turkish",
+          "UK - Ukrainian",
+          "ZH - Chinese(simplified)"
+        ],
+        "TEXTS": [
+          "required",
+          "Used to specify the text to be translated, the program will automatically identify the text source language."
+        ]
+      },
+      "examples": [
+        "trans Bonjour le monde! : Translates the provide French text into English.",
+        "trans -t DE \"Hello, world!\" : Translates the provided English text into German."
+      ],
+      "notes": [
+        "The 'trans' command uses the DeepL translation service, which is known for its high-quality translations.",
+        "The translation function is powered by DeepL.",
+        "If the target language is not specified, the command will use the default target language(US-EN) defined in the configuration.",
+        "The DeepL translation service supports a wide range of languages, allowing you to communicate effectively across language barriers."
+      ]
+    }
+  },
+  {
+    "commandName": "fx",
+    "aliasNames": ["ex"],
+    "profile": "Exchange rate conversion",
+    "detail": {
+      "usage": "fx [-sS SOURCE_CURRENCY] [-tT TARGET_CURRENCY] <AMOUNT>",
+      "desc": "The 'fx' command allows you to convert currency values from one currency to another using real-time exchange rates.",
+      "options": {
+        "-s, -S SOURCE_CURRENCY": [
+          "optional",
+          "Specifies the source currency you want to convert from. This is optional, and if not provided, the command will use the default source currency(CNY). Options currently available: ",
+          "CNY",
+          "USD",
+          "EUR",
+          "JPY",
+          "HKD",
+          "GBP",
+          "AUD",
+          "NZD",
+          "SGD",
+          "CHF",
+          "CAD",
+          "MYR",
+          "RUB",
+          "ZAR",
+          "KRW",
+          "AED",
+          "SAR",
+          "HUF",
+          "PLN",
+          "DKK",
+          "SEK",
+          "NOK",
+          "TRY",
+          "MXN",
+          "THB"
+        ],
+        "-t, -T TARGET_CURRENCY": [
+          "optional",
+          "Specifies the target currency you want to convert to. This is optional, and if not provided, the command will use the default target currency(USD). Options currently available: ",
+          "CNY",
+          "USD",
+          "EUR",
+          "JPY",
+          "HKD",
+          "GBP",
+          "AUD",
+          "NZD",
+          "SGD",
+          "CHF",
+          "CAD",
+          "MYR",
+          "RUB",
+          "ZAR",
+          "KRW",
+          "AED",
+          "SAR",
+          "HUF",
+          "PLN",
+          "DKK",
+          "SEK",
+          "NOK",
+          "TRY",
+          "MXN",
+          "THB"
+        ],
+        "AMOUNT": [
+          "required",
+          "The amount you want to convert, convert one amount at a time"
+        ]
+      },
+      "examples": [
+        "fx 100 : Converts 100 RMB to USD.",
+        "fx -s USD -t EUR 100 : Converts 100 US Dollars to Euros."
+      ],
+      "notes": [
+        "The 'fx' command uses real-time exchange rates to perform the currency conversion.",
+        "If source and target currencies are not provided, the command will use the default source(CNY) and target(USD) currencies specified in the configuration.",
+        "The conversion rates are updated regularly, ensuring accurate and up-to-date results, and the data source China Foreign Exchange Trade System."
+      ]
+    }
+  },
+  {
+    "commandName": "morse",
+    "aliasNames": [],
+    "profile": "Morse code coding",
+    "detail": {
+      "usage": "morse <TEXTS>",
+      "desc": "The 'morse' command allows you to encode plain text into Morse code. Morse code is a method used to represent letters, numbers, and symbols using sequences of dots and dashes. This command is useful for encoding messages in Morse code for various communication purposes.",
+      "options": {
+        "TEXTS": [
+          "required",
+          "The plain text that you want to encode into Morse code."
+        ]
+      },
+      "examples": [
+        "morse Hello, world! : Encodes the text \"Hello, world!\" into Morse code.",
+        "morse 12345 : Encodes the numbers \"12345\" into Morse code."
+      ],
+      "notes": [
+        "The 'morse' command takes the provided plain text and converts it into Morse code according to the standard Morse code mapping.",
+        "Morse code is often used in situations where traditional communication methods are limited, such as in emergencies or in scenarios requiring silent communication.",
+        "The resulting Morse code can be transmitted using light signals, sound signals, or other visual methods."
+      ]
+    }
+  },
+  {
+    "commandName": "esrom",
+    "aliasNames": [],
+    "profile": "Morse code decoding",
+    "detail": {
+      "usage": "esrom <CODES>",
+      "desc": "The 'ersom' command allows you to decode Morse code back into plain text. Morse code is a method used to represent letters, numbers, and symbols using sequences of dots and dashes. This command is useful for deciphering Morse code messages that you've received.",
+      "options": {
+        "CODES": [
+          "required",
+          "The Morse code that you want to decode into plain text."
+        ]
+      },
+      "examples": [
+        "esrom ...   ---   ... : Decodes the Morse code \"SOS\" into plain text."
+      ],
+      "notes": [
+        "The 'ersom' command takes the provided Morse code and converts it back into plain text according to the standard Morse code mapping.",
+        "Morse code is often used in situations where traditional communication methods are limited, such as in emergencies or in scenarios requiring silent communication.",
+        "The decoded plain text can then be understood and read as normal text."
+      ]
+    }
+  },
+  {
+    "commandName": "b64",
+    "aliasNames": ["base64"],
+    "profile": "Base64 encoding and decoding",
+    "detail": {
+      "usage": "b64 [-eE | -dD] <TEXTS>",
+      "desc": "The 'b64' command allows you to perform Base64 encoding and decoding, defaults to encoding mode. Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. This command enables you to either encode plaintext into Base64 or decode Base64-encoded data back to its original form.",
+      "options": {
+        "-e, -E": [
+          "optional",
+          "Encode the provided text into Base64 format. Only use one of the -e or -d options at a time, otherwise it will be recognized as part of the text."
+        ],
+        "-d, -D": [
+          "optional",
+          "Decode the provided Base64-encoded text back to its original form. Only use one of the -e or -d options at a time, otherwise it will be recognized as part of the text."
+        ],
+        "TEXTS": [
+          "required",
+          "The text to be processed. When using -e, this is the plain text to be encoded. When using -d, this is the Base64-encoded text to be decoded."
+        ]
+      },
+      "examples": [
+        "b64 Hello, World! : Encodes the text \"Hello, World!\" into Base64 format.",
+        "b64 -e Hello, World! : Encodes the text \"Hello, World!\" into Base64 format.",
+        "b64 -d SGVsbG8sIFdvcmxkIQ== : Decodes the Base64-encoded text \"SGVsbG8sIFdvcmxkIQ==\" back to \"Hello, World!\"."
+      ],
+      "notes": [
+        "The 'b64' command can be used to switch between binary data and a human-readable text format that is safe for transmission and storage.",
+        "The Base64 encoding is reversible, allowing you to decode the encoded text back to its original form.",
+        "Base64 is often used in various applications, including email attachments, URLs, and data storage, to handle binary data as text."
+      ]
+    }
+  },
+  {
+    "commandName": "bc",
+    "aliasNames": [],
+    "profile": "Binary conversion",
+    "detail": {
+      "usage": "bc [-sS SOURCE_BASE] [-tT TARGET_BASE] <NUM>",
+      "desc": "The 'bc' command allows you to convert whole numbers between different numeral systems (bases). This command is useful when you need to switch between decimal, binary, octal, or hexadecimal representations of whole numbers.",
+      "options": {
+        "-s, -S SOURCE_BASE": [
+          "optional",
+          "Specify the source numeral base. Base range 2~64, defaults to decimal(10)."
+        ],
+        "-t, -T TARGET_BASE": [
+          "optional",
+          "Specify the target numeral base. Base range 2~64, defaults to binary(2)."
+        ],
+        "NUM": [
+          "required",
+          "The whole number to be converted."
+        ]
+      },
+      "examples": [
+        "bc 2 : Converts the decimal number 2 to its binary equivalent, which is 10.",
+        "bc -s 6 -t 5 10 : Convert the base-6 number 10 to the base-5 11."
+      ],
+      "notes": [
+        "Supports source and target bases ranging from binary to base-64.",
+        "The 'bc' command is particularly helpful for programmers and mathematicians when dealing with different numeral systems in computations and conversions.",
+        "The converted whole number retains its value, but its representation changes based on the target numeral base.",
+        "This version of the 'bc' command does not support conversions involving fractions or decimal points."
+      ]
+    }
+  },
+  {
+    "commandName": "tts",
+    "aliasNames": [],
+    "profile": "Time to timestamp",
+    "detail": {
+      "usage": "tts [--ms] [--tz TIMEZONE] [TIME]",
+      "desc": "The 'tts' command allows you to convert a specified time to a Unix timestamp. Unix timestamp represents the number of seconds since January 1, 1970, at 00:00:00 UTC. This command is useful when you need to perform calculations or comparisons involving time intervals.",
+      "options": {
+        "--ms": [
+          "optional",
+          "Output the timestamp in milliseconds. Output in seconds when not specified."
+        ],
+        "--tz TIMEZONE": [
+          "optional",
+          "Specify the timezone for the output time. Defaults to UTC time if not specified."
+        ],
+        "TIME": [
+          "optional",
+          "The time to be converted to a timestamp. If not provided, the current time is used. Format: \"YYYY-MM-DD HH:MM:SS\"."
+        ]
+      },
+      "examples": [
+        "tts : Converts the current time to a Unix timestamp.",
+        "tts 2000-00-00 00:00:00 : Converts the specified time \"2000-00-00 00:00:00\" to a Unix timestamp.",
+        "tts --ms --tz Asia/Shanghai 2000-00-00 00:00:00 : Converts the specified time to a timestamp in milliseconds, considering the Shanghai timezone."
+      ],
+      "notes": [
+        "The 'tts' command converts a given time to its corresponding Unix timestamp.",
+        "The '--ms' option outputs the timestamp in milliseconds instead of seconds.",
+        "The '--tz' option allows you to specify a timezone for the out time. If not specified, the default is UTC.",
+        "The TIME argument should be provided in the \"YYYY-MM-DD HH:MM:SS\" format.",
+        "If no TIME argument is provided, the 'tts' command uses the current time to generate the timestamp.",
+        "The Unix timestamp is commonly used in software development, database management, and other areas where time calculations are important.",
+        "The timezone information can be used to adjust the timestamp based on the desired time zone."
+      ]
+    }
+  },
+  {
+    "commandName": "tst",
+    "aliasNames": [],
+    "profile": "Timestamp to time",
+    "detail": {
+      "usage": "tst [--ms] [--tz TIMEZONE] [TIMESTAMP]",
+      "desc": "The 'tst' command allows you to convert a Unix timestamp to a human-readable time representation. Unix timestamp represents the number of seconds since January 1, 1970, at 00:00:00 UTC. This command is useful when you need to convert a timestamp into a more understandable date and time format.",
+      "options": {
+        "--ms": [
+          "optional",
+          "Output the timestamp in milliseconds. Output in seconds when not specified."
+        ],
+        "--tz TIMEZONE": [
+          "optional",
+          "Specify the timezone for the output time. Defaults to UTC time if not specified."
+        ],
+        "TIMESTAMP": [
+          "optional",
+          "Timestamp to be converted to time. If not provided, the current time is used."
+        ]
+      },
+      "examples": [
+        "tst : Output current time.",
+        "tst 1698988800 : Converts the timestamp 1698988800 to a human-readable time in the default UTC timezone.",
+        "tst --ms --tz America/New_York 1698988800000 : Converts the timestamp in milliseconds to a human-readable time, considering the New York timezone."
+      ],
+      "notes": [
+        "The 'tst' command converts a given Unix timestamp to a human-readable time format.",
+        "The '--ms' option indicates that the input timestamp is provided in milliseconds instead of seconds.",
+        "The '--tz' option allows you to specify a timezone for the output time. If not specified, the default is UTC.",
+        "The TIMESTAMP argument should be provided as a numeric value representing the Unix timestamp.",
+        "If no TIMESTAMP argument is provided, the 'tst' command uses the current time to generate the human-readable time.",
+        "The human-readable time format includes date, time, and timezone information.",
+        "The timezone information can be used to adjust the output time based on the desired time zone.",
+        "The 'tst' command is useful for converting Unix timestamps used in various applications into a more understandable format."
+      ]
+    }
+  },
+  {
+    "commandName": "genpwd",
+    "aliasNames": [],
+    "profile": "Password generation",
+    "detail": {
+      "usage": "genpwd [-lLuUnNsS] [PWD_LENGTH]",
+      "desc": "The 'genpwd' command allows you to generate strong and random passwords based on your specified requirements. You can customize the password complexity by including or excluding different character sets such as lowercase letters, uppercase letters, numbers, and special characters.\n",
+      "options": {
+        "-l, -L": [
+          "optional",
+          "Include lowercase letters in the password."
+        ],
+        "-u, -U": [
+          "optional",
+          "Include uppercase letters in the password."
+        ],
+        "-n, -N": [
+          "optional",
+          "Include numbers in the password."
+        ],
+        "-s, -S": [
+          "optional",
+          "Include special characters in the password."
+        ],
+        "PWD_LENGTH": [
+          "optional",
+          "Specify the length of the generated password. The default length is 12"
+        ]
+      },
+      "examples": [
+        "genpwd : Generates a random password of 12 characters with lowercase letters, uppercase letters, numbers, and special characters.",
+        "genpwd -luns 12 : Generates a random password of 12 characters with lowercase letters, uppercase letters, numbers, and special characters.",
+        "genpwd -s 16 : Generates a 16-character password with only special characters.",
+        "genpwd 10 : Generates a random password of 10 characters with default complexity."
+      ],
+      "notes": [
+        "The 'genpwd' command generates strong and random passwords.",
+        "The options -l, -u, -n, and -s specify whether to include lowercase letters, uppercase letters, numbers, and special characters, respectively.",
+        "You can use one or more of these options to customize the password complexity.",
+        "The PWD_LENGTH argument specifies the length of the generated password. If not provided, a default length is used.",
+        "The generated password is random and can be used for securing accounts and systems.",
+        "By choosing different combinations of options, you can create passwords that meet your security requirements.",
+        "The 'genpwd' command is useful for generating secure passwords for various applications, services, and accounts."
+      ]
+    }
+  },
+  {
+    "commandName": "codev",
+    "aliasNames": [],
+    "profile": "Enter the codev online IDE page",
+    "detail": {
+      "usage": "codev [LANGUAGE] [-tT | -sS] [INDENT_UNIT]",
+      "desc": "The 'codev' command is used to navigate to an online integrated development environment (IDE) page for the specified programming language. This command helps developers quickly access a web-based coding environment to write and test code. You can also customize the IDE settings by specifying the preferred indent type (spaces or tabs) and the indent unit (length of the indentation). It utilizes the power of Judge0's online IDE service to provide a coding environment. This site offers a daily quota of free compilation runs, and users are advised to use a private API Key obtained from Judge0 officials.",
+      "options": {
+        "LANGUAGE": [
+          "optional",
+          "Specify the programming language for which you want to access the online IDE. Defaults to Python 3. Options currently available: ",
+          "C - C (Clang 7.0.1)",
+          "C# - C# (Mono 6.10.0.104)",
+          "C++ - C++ (Clang 10.0.1)",
+          "GO - Go (1.15.5)",
+          "JAVA - Java (OpenJDK 14.0)",
+          "JS - JavaScript (Node.js 12.14.0)",
+          "OBJECTIVE-C - Objective-C (Clang 7.0.1)",
+          "PHP - PHP (7.4.1)",
+          "PY2 - Python (2.7.17)",
+          "PY3 - Python (3.8.1)",
+          "R - R (4.0.0)",
+          "RUBY - Ruby (2.7.0)",
+          "RUST - Rust (1.40.0)",
+          "SWIFT - Swift (5.2.3)",
+          "TYPESCRIPT - TypeScript (3.7.4)"
+        ],
+        "-t, -T": [
+          "optional",
+          "Specify the type of indentation used in the online IDE as tabs. Only one of the -s or -t options can be used at a time; if more than one is selected, spaces are used as the indentation type."
+        ],
+        "-s, -S": [
+          "optional",
+          "Specify the type of indentation used in the online IDE as spaces. Only one of the -s or -t options can be used at a time; if more than one is selected, spaces are used as the indentation type."
+        ],
+        "INDENT_UNIT": [
+          "optional",
+          "Specify the length of each indentation unit (2 or 4 characters)."
+        ]
+      },
+      "examples": [
+        "codev : Opens an online IDE page tailored for Python3 programming, indentation type is space, indentation length is 4 characters.",
+        "codev go -t 2 : Opens an online IDE page tailored for Go programming, indentation type is tab, indentation length is 2 characters."
+      ],
+      "notes": [
+        "The 'codev' command is a convenient way to access an online coding environment for various programming languages.",
+        "Online IDE powered by Judge0.",
+        "By specifying the programming language, you can ensure that the IDE is optimized for that language's syntax.",
+        "You can choose between using spaces or tabs for indentation based on your coding style.",
+        "The [INDENT_UNIT] argument specifies the length of each indentation unit. It can be either 2 or 4 characters.",
+        "Using the 'codev' command helps streamline your coding workflow by providing instant access to a coding environment.",
+        "Online IDEs offer features such as code highlighting, debugging, collaboration, and version control integration.",
+        "The 'codev' command is especially useful for quickly testing code snippets or exploring new programming languages."
+      ]
+    }
+  },
+  {
+    "commandName": "rename",
+    "aliasNames": [],
+    "profile": "Modify the username",
+    "detail": {
+      "usage": "rename <USERNAME>",
+      "desc": "The 'rename' command is used to modify the username associated with the current account. Users are created with a registered e-mail address as their username, this command allows users to change their username to something more suitable or meaningful.",
+      "options": {
+        "USERNAME": [
+          "required",
+          "Update the username of this account."
+        ]
+      },
+      "examples": [
+        "rename Max : Set the username of this account to Max."
+      ],
+      "notes": [
+        "The 'rename' command should be used with caution, as it may have various implications depending on the system configuration.",
+        "The 'rename' command is useful for updating your account's username to something more relevant or personalized.",
+        "Command needs to be used while logged in."
+      ]
+    }
+  },
+  {
+    "commandName": "adk",
+    "aliasNames": [],
+    "profile": "Adding a private API Key to the service",
+    "detail": {
+      "usage": "adk <SERVICE> <API_KEY>",
+      "desc": "The 'adk' command is used to securely add a private API key for a specific service. This command allows you to associate an encrypted API key with a service, enabling you to access restricted features or data provided by that service. The added API key will be used to authenticate your requests and grant you access to authorized resources.",
+      "options": {
+        "SERVICE": [
+          "required",
+          "Specify the name of the service you want to associate the API key with. Options currently available: ",
+          "DeepL",
+          "Judge0"
+        ],
+        "API_KEY": [
+          "required",
+          "Provide the private API key that you wish to add for the specified service."
+        ]
+      },
+      "examples": [
+        "adk DeepL xxx-xxx-xxx : Associates the private API key \"xxx-xxx-xxx\" with the \"DeepL\" service."
+      ],
+      "notes": [
+        "The 'adk' command is used to enable access to restricted resources or functionalities provided by a service through the use of encrypted API keys.",
+        "The API key you provide will be encrypted and securely stored to protect your sensitive information.",
+        "Be cautious with your API keys and avoid sharing them in public spaces to maintain the security of your resources.",
+        "API keys are commonly used to authenticate requests made to external services and grant access to specific features or data.",
+        "Ensure that you have a valid API key for the specified service before using the 'adk' command.",
+        "Some services may require additional steps to generate and obtain an API key. Refer to the service's documentation for more information.",
+        "Try not to use this command in public places or in environments with unsecured networks.",
+        "Multiple APIs for one user and one service are not supported at this time.",
+        "Command needs to be used while logged in."
+      ]
+    }
+  },
+  {
+    "commandName": "fdk",
+    "aliasNames": [],
+    "profile": "Find the private API Key set by a service",
+    "detail": {
+      "usage": "fdk <SERVICE>",
+      "desc": "The 'fdk' command allows you to securely view the private API key associated with a specific service. This command enables you to retrieve the encrypted API key that you have previously added for a particular service. The API key is required to authenticate your requests and access authorized resources provided by that service.",
+      "options": {
+        "SERVICE": [
+          "required",
+          "Specify the name of the service for which you want to view the private API key. Options currently available: ",
+          "DeepL",
+          "Judge0"
+        ]
+      },
+      "examples": [
+        "fdk Judge0 : Retrieves the private API key associated with the \"Judge0\" service."
+      ],
+      "notes": [
+        "The 'fdk' command is used to securely access and display the private API key associated with a service.",
+        "Be cautious with your API keys and avoid sharing them in public spaces to maintain the security of your resources.",
+        "Ensure that you have previously added the API key for the specified service using the 'adk' command.",
+        "It's important to securely manage and store your API keys to protect your account and associated resources.",
+        "Keep in mind that API keys are sensitive information and should be treated as such.",
+        "Always refer to the official documentation of the service to understand the purpose and usage of API keys.",
+        "Misusing or sharing your API keys might compromise the security of your account and resources.",
+        "Ensure that you have the necessary permissions to view the API key for the specified service.",
+        "Try not to use this command in public places or in environments with unsecured networks.",
+        "Command needs to be used while logged in."
+      ]
+    }
+  },
+  {
+    "commandName": "upk",
+    "aliasNames": [],
+    "profile": "Updating the private API Key set by a service",
+    "detail": {
+      "usage": "upk <SERVICE> <API_KEY",
+      "desc": "The 'upk' command allows you to update the private API key associated with a specific service. This command enables you to modify the encrypted API key that you have previously added for a particular service. The API key is required to authenticate your requests and access authorized resources provided by that service.",
+      "options": {
+        "SERVICE": [
+          "required",
+          "Specify the name of the service for which you want to update the private API key. Options currently available: ",
+          "DeepL",
+          "Judge0"
+        ],
+        "API_KEY": [
+          "required",
+          "Provide the private API key that you wish to update for the specified service."
+        ]
+      },
+      "examples": [
+        "upk DeepL xxx-xxx-xxx : Updates the private API key for the \"DeepL\" service with the new API key \"xxx-xxx-xxx\"."
+      ],
+      "notes": [
+        "The 'upk' command is used to securely update the private API key associated with a service.,",
+        "The updated API key will replace the existing API key associated with the service.",
+        "The API key is used to authenticate requests made to the service and grant access to specific features or resources.",
+        "Be cautious with your API keys and avoid sharing them in public spaces to maintain the security of your resources.",
+        "Ensure that you have previously added the API key for the specified service using the 'adk' command.",
+        "Always refer to the official documentation of the service to understand the purpose and usage of API keys.",
+        "Misusing or sharing your API keys might compromise the security of your account and resources.",
+        "Keep in mind that API keys are sensitive information and should be treated as such.",
+        "Safeguard your API keys and avoid exposing them to potential attackers.",
+        "If you suspect any unauthorized access or misuse of your API keys, take appropriate actions to protect your account.",
+        "Try not to use this command in public places or in environments with unsecured networks.",
+        "Command needs to be used while logged in."
+      ]
+    }
+  },
+  {
+    "commandName": "ban",
+    "aliasNames": [],
+    "profile": "Disable private API Key for a service",
+    "detail": {
+      "usage": "ban <SERVICE> <API_KEY>",
+      "desc": "The 'ban' command allows you to disable or ban a private API key associated with a specific service. This command enables you to prevent further usage of the specified API key, effectively revoking its access to the resources and features provided by the service. Banning an API key can be useful in scenarios where you suspect unauthorized or malicious usage of the key.",
+      "options": {
+        "SERVICE": [
+          "required",
+          "Specify the name of the service for which you want to ban the private API key. Options currently available: ",
+          "DeepL",
+          "Judge0"
+        ],
+        "API_KEY": [
+          "required",
+          "Provide the API key that you want to ban or disable."
+        ]
+      },
+      "examples": [
+        "ban Judge0 xxx-xxx-xxx : Disables the private API key \"xxx-xxx-xxx\" associated with the \"Judge0\" service."
+      ],
+      "notes": [
+        "The 'ban' command is used to disable or ban a private API key associated with a service.,",
+        "Banning an API key will prevent it from making requests and accessing resources provided by the service.",
+        "Use the 'ban' command when you suspect unauthorized or malicious usage of an API key.",
+        "Once an API key is banned, it cannot be used to authenticate requests to the service.",
+        "Be cautious with banning API keys, as it might affect legitimate users and applications.",
+        "Always refer to the official documentation of the service to understand the impact of banning API keys.",
+        "Keep in mind that API keys are sensitive information and should be treated as such.",
+        "Regularly monitor and review the usage of your API keys to identify potential issues.",
+        "If you suspect any unauthorized access or misuse of your API keys, take appropriate actions to protect your account.",
+        "Try not to use this command in public places or in environments with unsecured networks.",
+        "Command needs to be used while logged in."
+      ]
+    }
+  },
+  {
+    "commandName": "open",
+    "aliasNames": [],
+    "profile": "Open a link",
+    "detail": {
+      "usage": "open [-nN | -cC] <URL>",
+      "desc": "The 'open' command allows you to open a URL (Uniform Resource Locator) in a web browser or other appropriate application. You can specify whether the URL should be opened in a new tab, or whether it should be opened in the same tab as the current one. This command is useful for quickly accessing web pages, documents, or resources directly from the command line.",
+      "options": {
+        "-n, -N": [
+          "optional",
+          "Open the specified URL in a new tab. The -n and -c options are mutually exclusive. Choose one of them based on your preference."
+        ],
+        "-c, -C": [
+          "optional",
+          "Open the specified URL in the current tab. The -n and -c options are mutually exclusive. Choose one of them based on your preference, defaults to open in the current window."
+        ],
+        "URL": [
+          "required",
+          "Provide the URL that you want to open in the web browser or application."
+        ]
+      },
+      "examples": [
+        "open www.example.com : Opens the URL \"http://www.example.com\" in the default web browser.",
+        "open -n https://www.example.com : Opens the URL \"https://www.example.com\" in a new browser window or tab."
+      ],
+      "notes": [
+        "The 'open' command is used to open a specified URL in a web browser or appropriate application.",
+        "The 'open' command simplifies accessing web content directly from the command line.",
+        "Make sure the URL is properly formatted and includes the appropriate scheme (http/https).",
+        "Use the 'open' command to quickly open URLs without manually navigating through a web browser.",
+        "This command is particularly useful for automating tasks that involve opening specific web resources.",
+        "URLs containing special characters or spaces might require proper URL encoding.",
+        "URLs are case-sensitive, so ensure the URL is correctly typed to avoid errors."
+      ]
+    }
+  },
+  {
+    "commandName": "login",
+    "aliasNames": [],
+    "profile": "Jump to the login page",
+    "detail": {
+      "usage": "login",
+      "desc": "Jump to the login page",
+      "options": {},
+      "examples": [],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "register",
+    "aliasNames": ["signup"],
+    "profile": "Jump to the registration page",
+    "detail": {
+      "usage": "register",
+      "desc": "Jump to the registration page",
+      "options": {},
+      "examples": [],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "exit",
+    "aliasNames": ["logout"],
+    "profile": "Logout",
+    "detail": {
+      "usage": "exit",
+      "desc": "In the login state, exit the login with the 'exit' command. In the non-logged-in state, close the page with the 'exit' command.",
+      "options": {},
+      "examples": [],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "google",
+    "aliasNames": ["go"],
+    "profile": "Google search",
+    "detail": {
+      "usage": "google [QUERY]",
+      "desc": "The 'google' command allows you to perform searches on the Google search engine directly from the command line. It provides a convenient way to look up information, websites, articles, and other resources without needing to open a web browser.",
+      "options": {
+        "QUERY": [
+          "optional",
+          "Provide the search query you want to perform on Google. This can be a keyword, phrase, question, or any other search term. If QUERY is not specified, it will be redirected to the main Google page."
+        ]
+      },
+      "examples": [
+        "google : Jump to www.google.com.",
+        "google news : Performs a search for the news.",
+        "google technology news : Performs a search for the latest technology news."
+      ],
+      "notes": [
+        "- The use of Google is limited in some areas, 'google' commands need to be used in the network environment where Google is available."
+      ]
+    }
+  },
+  {
+    "commandName": "bing",
+    "aliasNames": [],
+    "profile": "Bing search",
+    "detail": {
+      "usage": "bing [QUERY]",
+      "desc": "The 'bing' command allows you to perform searches on the Bing search engine directly from the command line. It provides a convenient way to look up information, websites, articles, and other resources without needing to open a web browser.",
+      "options": {
+        "QUERY": [
+          "optional",
+          "Provide the search query you want to perform on Bing. This can be a keyword, phrase, question, or any other search term. If QUERY is not specified, it will be redirected to the main Bing page."
+        ]
+      },
+      "examples": [
+        "bing : Jump to www.bing.com.",
+        "bing news : Performs a search for the news.",
+        "bing technology news : Performs a search for the latest technology news."
+      ],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "github",
+    "aliasNames": [],
+    "profile": "GitHub search",
+    "detail": {
+      "usage": "github [QUERY]",
+      "desc": "The 'github' command allows you to perform searches on GitHub repositories, issues, pull requests, users, and other resources right from the command line. It provides a convenient way to explore GitHub repositories and find relevant information without needing to open a web browser.",
+      "options": {
+        "QUERY": [
+          "optional",
+          "Provide the search query you want to perform on GitHub. This can be a repository name, user profile, issue, pull request, or any other search term. Use the command to jump to the GitHub homepage if not specified."
+        ]
+      },
+      "examples": [
+        "github : Jump to www.github.com.",
+        "github Django : Searching for Django entries in GitHub repositories."
+      ],
+      "notes": []
+    }
+  },
+  {
+    "commandName": "blogs",
+    "aliasNames": [],
+    "profile": "Jump to the blog list page",
+    "detail": {
+      "usage": "blogs [-aA AUTHOR] [-tT TITLE]",
+      "desc": "The 'blogs' command allows you to search for blogs based on specified criteria. It provides a convenient way to discover and access blog posts related to specific authors or titles directly from the command line.",
+      "options": {
+        "-a, -A AUTHOR": [
+          "optional",
+          "Specify the author's name to search for blogs written by that author."
+        ],
+        "-t, -T TITLE": [
+          "optional",
+          "Specify a title keyword to search for blogs with matching titles."
+        ]
+      },
+      "examples": [
+        "blogs : Jump to the blog list page.",
+        "blogs -a Max : Searches for blogs written by the author \"Max.\"",
+        "blogs -t technology : Searches for blogs with titles containing the keyword \"technology.\"",
+        "blogs -a Max -t technology : Searches for blogs written by \"Max\" with titles containing the keyword \"technology.\""
+      ],
+      "notes": []
+    }
+  }
+]
