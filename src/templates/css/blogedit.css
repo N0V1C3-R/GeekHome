@@ -46,7 +46,8 @@
 #editor-md {
     position: fixed;
     top: 45px;
-    height: calc(100vh - 45px);
+    padding-bottom: 3%;
+    background-color: black;
 }
 
 .titleName {
@@ -134,4 +135,8 @@ input[type="checkbox"]:checked + .slider:before {
     left: 10px;
     color: #888;
     font-size: 14px;
+}
+
+#layout {
+    width: 80%;
 }

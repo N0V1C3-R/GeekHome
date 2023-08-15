@@ -6,25 +6,25 @@
 {{ template "middle" . }}
 
 <div id="blog-navigation">
-    <input id="create-btn" type="submit" value="Creat" onclick="newBlog()">
+    <input id="create-btn" type="submit" value="Create" onclick="newBlog()">
 </div>
 
 <div id="listbox">
-    <div class="search-form">
-        <input type="text" class="search-input" placeholder="搜索博客">
-        <select class="filter-select">
-            <option value="">All</option>
-            {{.classificationHTML}}
-        </select>
-        <button>搜索</button>
-    </div>
+<!--    <div class="search-form">-->
+<!--        <input type="text" class="search-input" placeholder="搜索博客">-->
+<!--        <select class="filter-select">-->
+<!--            <option value="">All</option>-->
+<!--            {{.classificationHTML}}-->
+<!--        </select>-->
+<!--        <button>搜索</button>-->
+<!--    </div>-->
     <ul class="blog-list">
         {{range .articles}}
         <li class="blog-item">
             <h2 class="blog-title"><a href="/blogs/read/{{.Title}}">{{.Title}}</a></h2>
             <div class="blog-meta">
                 Release Time: <span class="releaseTime">{{formatTimestamp .CreatedAt}}</span> | Reviews: <span>{{.TotalReviews}}</span>
-                | Author: <span>{{ if .IsAnonymous }} Anonymous {{else}} <a methods="get" href="/blogs?authorName={{getUserNameById $.userIdUsernameMap .UserId}}">{{getUserNameById $.userIdUserNameMap .UserId}}</a> {{ end }}</span>
+                | Author: <span>{{ if .IsAnonymous }} Anonymous {{else}} <a methods="get" href="/blogs?authorName={{getUsernameById $.userIdUsernameMap .UserId}}">{{getUsernameById $.userIdUsernameMap .UserId}}</a> {{ end }}</span>
             </div>
         </li>
         {{end}}

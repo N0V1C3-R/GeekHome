@@ -30,11 +30,33 @@ async function postRequestServer(url, body) {
 
 const commandInput = document.querySelector('.command__input');
 
+const commandHistory = []
+let historyIndex = -1;
 commandInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
+        const command = commandInput.value
+        commandHistory.push(command)
+        historyIndex = commandHistory.length - 1
         commandInput.setAttribute("disabled", "disabled");
         const _ = commandListener(event);
         event.preventDefault();
+    } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (historyIndex >= 0) {
+            commandInput.value = commandHistory[historyIndex];
+            if (historyIndex > 0) {
+                historyIndex--;
+            }
+        }
+    } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            commandInput.value = commandHistory[historyIndex];
+        } else {
+            commandInput.value = "";
+            historyIndex = commandHistory.length - 1
+        }
     }
 });
 
@@ -52,9 +74,29 @@ async function addNewTerminal(username, ip) {
     newCommandInput.autofocus = true;
     newCommandInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
+            const command = newCommandInput.value
+            commandHistory.push(command)
+            historyIndex = commandHistory.length - 1
             newCommandInput.setAttribute("disabled", "disabled");
             commandListener(event);
             event.preventDefault();
+        } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            if (historyIndex >= 0) {
+                newCommandInput.value = commandHistory[historyIndex];
+                if (historyIndex > 0) {
+                    historyIndex--;
+                }
+            }
+        } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                newCommandInput.value = commandHistory[historyIndex];
+            } else {
+                newCommandInput.value = "";
+                historyIndex = commandHistory.length - 1
+            }
         }
     });
     newCommand.appendChild(newUserInfo);
@@ -77,13 +119,25 @@ class Command {
 
     async execute(inputText) {
         var body = JSON.stringify({"stdin": inputText})
-        // this.resp = "ERROR: [command] command that cannot be parsed".replace("[command]", "[" + this.commandName + "]");
         var responseObj = await this.postRequestServer("/command", body)
         if (responseObj.redirected) {
-            console.log(responseObj.url)
-            window.location.href = responseObj.url;
+                window.location.href = responseObj.url;
         }
         var response = await responseObj.json()
+        if (responseObj.status === 302) {
+            var urlString = response["response"]
+            var url = new URL(urlString);
+            var mode = url.searchParams.get('mode');
+            if (mode === "newTab") {
+                url.searchParams.delete("mode");
+                urlString = url.toString()
+                window.open(urlString, "_blank");
+                return
+            } else {
+                window.location.href = urlString;
+                return
+            }
+        }
         this.resp = response["response"]
         this.printResponse()
     }
@@ -122,51 +176,6 @@ class ClearCommand extends Command {
         } else {
             const fatherDiv = document.querySelector(".terminal");
             fatherDiv.innerHTML = "";
-        }
-    }
-}
-
-class OpenCommand extends Command {
-    constructor(commandName) {
-        super(commandName);
-        this.aliasList = ["open"];
-    }
-
-    async execute(inputList) {
-        if (inputList.length === 0) {
-            this.resp = "ERROR: [command] command that cannot be parsed".replace("[command]", "[" + this.commandName + "]");
-        } else {
-            const protocolHeaders = ["https://", "http://", "file:///", "ftp://"]
-            switch (inputList.length) {
-                case 1:
-                    if (protocolHeaders.some(protocolHeader => inputList[0].toLowerCase().startsWith(protocolHeader))) {
-                        window.open(inputList[0], "_blank");
-                    } else {
-                        this.resp = "ERROR: Temporarily unsupported protocols, or protocols missing. HTTP, HTTPS, FILE, FTP are supported protocols for this application."
-                    }
-                    break;
-                case 2:
-                    if (protocolHeaders.some(protocolHeader => inputList[1].toLowerCase().startsWith(protocolHeader))) {
-                        if (inputList[0].toUpperCase() === "-R") {
-                            window.location.href = inputList[0];
-                        } else if (inputList[0].toUpperCase() === "-N") {
-                            window.open(inputList[0], "_blank");
-                        } else {
-                            this.resp = "Error: Illegal mode\n"
-                                + "open -N :(default) Open new window\n"
-                                + "\t-R :Current window open link\n"
-                        }
-                    } else {
-                        this.resp = "ERROR: Temporarily unsupported protocols, or protocols missing. HTTP, HTTPS, FILE, FTP are supported protocols for this application."
-                    }
-                    break;
-                default:
-                    this.resp = "ERROR: Commands that cannot be parsed."
-                    break;
-            }
-        }
-        if (typeof this.resp !== "undefined") {
-            this.printResponse();
         }
     }
 }
@@ -235,67 +244,13 @@ class RegisterCommand extends Command {
     }
 }
 
-class GoogleCommand extends Command {
-    constructor(commandName) {
-        super(commandName);
-        this.aliasList = ["google", "go"]
-    }
-
-    async execute(inputList) {
-        if (inputList.length === 0) {
-            window.open("https://www.google.com")
-        } else {
-            inputList = inputList.map(str => str.replace("%", "%25"))
-            inputList = inputList.map(str => str.replace("+", "%2B"))
-            const search = inputList.join("%20")
-            window.open( "https://www.google.com/search?q=" + search, "_blank");
-        }
-    }
-}
-
-class BingCommand extends Command {
-    constructor(commandName) {
-        super(commandName);
-        this.aliasList = ["bing"]
-    }
-
-    async execute(inputList) {
-        if (inputList.length === 0) {
-            window.open("https://www.bing.com")
-        } else {
-            inputList = inputList.map(str => str.replace("%", "%25"))
-            inputList = inputList.map(str => str.replace("+", "%2B"))
-            const search = inputList.join("%20")
-            window.open( "https://www.bing.com/search?q=" + search, "_blank");
-        }
-    }
-}
-
-class GithubCommand extends Command {
-    constructor(commandName) {
-        super(commandName);
-        this.aliasList = ["github"]
-    }
-
-    async execute(inputList) {
-        if (inputList.length === 0) {
-            window.open("https://github.com/")
-        } else {
-            inputList = inputList.map(str => str.replace("%", "%25"))
-            inputList = inputList.map(str => str.replace("+", "%2B"))
-            const search = inputList.join("%20")
-            window.open( "https://github.com/search?q=" + search, "_blank");
-        }
-    }
-}
-
 async function commandListener(event) {
     const inputText = event.target.value.trim();
     const textList = inputText.split(' ')
     const command = textList[0];
 
     const commandClasses = [
-        ClearCommand, OpenCommand, LoginCommand, ExitCommand, RegisterCommand, GoogleCommand, BingCommand, GithubCommand
+        ClearCommand, LoginCommand, ExitCommand, RegisterCommand
     ];
     let commandClass;
     for (const cls of commandClasses) {

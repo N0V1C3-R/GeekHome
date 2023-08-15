@@ -51,23 +51,6 @@
 
 </div>
 
-<div id="nameModal" style="display: none;">
-    <form id="name" method="post">
-        <div class="close-button" onclick="closeNameModal()"></div>
-        <div class="form-input">
-            {{if eq .title ""}}
-            <input type="text" class="titleName" oninput="validateTitle()" required>
-            <label for="name" class="input-label">Enter your blog title</label>
-            {{else}}
-            <input type="text" class="titleName" value="{{.title}}" oninput="validateTitle()" required>
-            {{end}}
-        </div>
-        <div class="form-output">
-            <input id="submitButton" type="submit" value="Commit">
-        </div>
-    </form>
-</div>
-
 <script src="/templates/js/JQuery.js"></script>
 <script src="/templates/lib/editormd/editormd.js"></script>
 <script src="/templates/js/blogedit.js"></script>

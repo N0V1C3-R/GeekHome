@@ -288,7 +288,7 @@
                     url      : "URL",
                     link     : "link",
                     alt      : "Desc",
-                    uploadButton     : "Local upload",
+                    uploadButton     : "Local",
                     imageURLEmpty    : "Error: The image address cannot be empty.",
                     uploadFileEmpty  : "Error: The uploaded image cannot be empty.",
                     formatNotAllowed : "Error: Only image files are allowed to be uploaded. The following image file formats are allowed to be uploaded:"
