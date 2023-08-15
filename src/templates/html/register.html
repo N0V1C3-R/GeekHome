@@ -72,14 +72,14 @@
             event.preventDefault();
             let isValid = true
             let errorMsg;
-            const allowedChar = /^[A-Za-z0-9!@#$%^&*_+<>?,.:]+$/
+            const allowedChar = /^[A-Za-z0-9!@#$%^&*?]+$/
 
             if (password.length < 6) {
                 isValid = false;
                 errorMsg = "ERROR: Password length is less than 6, please use a password of six or more digits, and a strong password is recommended!"
             } else if (!allowedChar.test(password)) {
                 isValid = false;
-                errorMsg = "ERROR: Password contains illegal characters, please use numbers, upper and lower case letters or special symbols\n(The supported special symbols are: !@#$%^&*_+<>?,. )"
+                errorMsg = "ERROR: Password contains illegal characters, please use numbers, upper and lower case letters or special symbols\n(The supported special symbols are: !@#$%^&*?)"
             } else if (password !== confirmPassword) {
                 isValid = false;
                 errorMsg = "ERROR: Two times the password input does not match!"

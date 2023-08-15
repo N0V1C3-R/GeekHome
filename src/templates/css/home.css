@@ -45,9 +45,8 @@ body {
 
 .result {
     margin-left: 6px;
-    white-space: pre;
+    white-space: normal;
 }
-
 
 a:link {
      color: black;
@@ -63,4 +62,108 @@ a:hover {
 
 a:active {
     color: green;
+}
+
+table {
+    border-collapse: collapse;
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    margin: 0;
+    padding: 0;
+}
+
+table td {
+    margin: 0;
+    padding: 1px 13px;
+}
+
+table td:first-child {
+    vertical-align: top;
+    margin-top: 0;
+}
+
+table td:last-child {
+    margin-bottom: 0;
+}
+
+.manBox {
+    width: 50%;
+    height: auto;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    max-height: 40vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 16px;
+}
+
+.manBox::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+}
+
+.manBox::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.divider-line {
+    flex-grow: 1;
+    border: none;
+    height: 2px;
+}
+
+.divider-text {
+    padding: 0 10px;
+}
+
+.title {
+    margin-top: 6px;
+    font-weight: bold;
+}
+
+.result .title:first-child {
+    margin-top: 0;
+}
+
+.commandName, .aliasList, .usage, .desc, .instruction {
+    text-indent: 2em;
+}
+
+.optionality {
+    font-style: italic;
+}
+
+span {
+    white-space: normal;
+}
+
+code {
+    display: block;
+    text-indent: 2em;
+}
+
+li {
+    white-space: normal;
+}
+
+.optionTable {
+    border: solid white;
+    text-align: left;
+}
+
+tr span.instruction:nth-child(n+2) {
+    text-indent: 2ch;
+    display: inline-block;
 }

@@ -42,7 +42,7 @@
         if (response.status === 302) {
             window.location.href = "/hello"
         } else if (response.status === 400) {
-            alert("ERROR: Password input error!")
+            alert("ERROR: Incorrect username or password!")
         } else if (response.status === 401) {
             alert("ERROR: Verify that the token is missing, please refresh the page and try again.")
         }

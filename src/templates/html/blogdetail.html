@@ -5,6 +5,27 @@
     .markdown-body{
         background-color: transparent;
     }
+    body {
+        justify-content: center;
+        display: flex;
+    }
+    #content {
+        width: 80%;
+    }
+    #content::-webkit-scrollbar {
+        width: 0.5em;
+        height: 0.5em;
+    }
+    #content::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    img {
+        width: 400px;
+        height: 300px;
+        cursor: pointer;
+        display: block;
+        margin: 0 auto;
+    }
 </style>
 
 {{ template "middle" . }}
@@ -38,6 +59,20 @@
             flowChart: true,
             sequenceDiagram: true,
         });
+
+        window.onload = function () {
+            const images = document.querySelectorAll('img');
+            images.forEach(function(image) {
+                image.style.transform = "scale(1.0)";
+                image.addEventListener("click", function () {
+                    if (image.style.transform === "scale(1)") {
+                        image.style.transform = "scale(1.5)";
+                    } else {
+                        image.style.transform = "scale(1)";
+                    }
+                })
+            })
+        }
     });
 </script>
 
