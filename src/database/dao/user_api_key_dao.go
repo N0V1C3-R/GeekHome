@@ -16,6 +16,11 @@ func NewUserAPIKeyDao() *UserAPIKeyDao {
 	return &UserAPIKeyDao{*baseDao, schema}
 }
 
+func NewReadOnlyUserAPIKeyDao() *UserAPIKeyDao {
+	schema := db.Table(model.NewUserApiKey().TableName())
+	return &UserAPIKeyDao{*readOnlyBaseDao, schema}
+}
+
 func (dao *UserAPIKeyDao) GetAPIKey(userId int64, serviceName model.ThirdPartyServiceName, isUsable bool) model.UserAPIKey {
 	var conditions string
 	if isUsable {

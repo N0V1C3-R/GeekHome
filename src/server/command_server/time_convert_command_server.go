@@ -474,20 +474,19 @@ var cityTimeZoneMap = map[string]string{
 }
 
 func (tcs *TimeConvertServer) ParseCommand(stdin string) {
-	tcs.Required = make(map[string]string)
+	tcs.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if tcs.Required["sourceTime"] == "" {
+		if tcs.Options["sourceTime"] == "" {
 			switch strings.ToUpper(arg) {
 			case "--MS":
-				tcs.Required["precision"] = "MilliSecond"
+				tcs.Options["precision"] = "MilliSecond"
 				continue
 			case "--TZ":
 				if i+1 < len(parts) {
 					i++
-					tcs.Options = make(map[string]string)
 					ok, timeZone := validationSupportTimeZone(parts[i])
 					if ok {
 						tcs.Options["timeZone"] = timeZone
@@ -498,11 +497,11 @@ func (tcs *TimeConvertServer) ParseCommand(stdin string) {
 				continue
 			}
 		}
-		tcs.Required["sourceTime"] += arg + " "
+		tcs.Options["sourceTime"] += arg + " "
 	}
-	tcs.Required["sourceTime"] = strings.TrimRight(tcs.Required["sourceTime"], " ")
-	if tcs.Required["precision"] == "" {
-		tcs.Required["precision"] = "Second"
+	tcs.Options["sourceTime"] = strings.TrimRight(tcs.Options["sourceTime"], " ")
+	if tcs.Options["precision"] == "" {
+		tcs.Options["precision"] = "Second"
 	}
 }
 
@@ -518,8 +517,8 @@ func (tcs *TimeConvertServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unsupported time zones"})
 	}
 
-	precision := tcs.Required["precision"]
-	sourceTime := tcs.Required["sourceTime"]
+	precision := tcs.Options["precision"]
+	sourceTime := tcs.Options["sourceTime"]
 	var tTime *time.Time
 	if sourceTime == "" {
 		tTimeObj := utils.GetCurrentTime()
@@ -542,23 +541,19 @@ func (tcs *TimeConvertServer) ExecuteCommand(c *gin.Context) {
 }
 
 func (tcs *TimestampConvertServer) ParseCommand(stdin string) {
-	tcs.Required = make(map[string]string)
+	tcs.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	if len(parts) == 0 {
-		return
-	}
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if tcs.Required["sourceTime"] == "" {
+		if tcs.Options["sourceTime"] == "" {
 			switch strings.ToUpper(arg) {
-			case "-MS":
-				tcs.Required["precision"] = "MilliSecond"
+			case "--MS":
+				tcs.Options["precision"] = "MilliSecond"
 				continue
-			case "-TZ":
+			case "--TZ":
 				if i+1 < len(parts) {
 					i++
-					tcs.Options = make(map[string]string)
 					ok, timeZone := validationSupportTimeZone(parts[i])
 					if ok {
 						tcs.Options["timeZone"] = timeZone
@@ -570,15 +565,17 @@ func (tcs *TimestampConvertServer) ParseCommand(stdin string) {
 			}
 		}
 		numStr := strings.ReplaceAll(arg, ",", "")
-		tcs.Required["sourceTime"] += numStr + " "
+		tcs.Options["sourceTime"] += numStr + " "
 	}
-	tcs.Required["sourceTime"] = strings.TrimRight(tcs.Required["sourceTime"], " ")
-	_, err := strconv.ParseInt(tcs.Required["sourceTime"], 0, 0)
-	if err != nil {
-		tcs.Required["sourceTime"] = "ERR"
+	tcs.Options["sourceTime"] = strings.TrimRight(tcs.Options["sourceTime"], " ")
+	if tcs.Options["sourceTime"] != "" {
+		_, err := strconv.ParseInt(tcs.Options["sourceTime"], 0, 0)
+		if err != nil {
+			tcs.Options["sourceTime"] = "ERR"
+		}
 	}
-	if tcs.Required["precision"] == "" {
-		tcs.Required["precision"] = "Second"
+	if tcs.Options["precision"] == "" {
+		tcs.Options["precision"] = "Second"
 	}
 }
 
@@ -593,8 +590,8 @@ func (tcs *TimestampConvertServer) ExecuteCommand(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unsupported time zones"})
 	}
-	precision := tcs.Required["precision"]
-	sourceTime := tcs.Required["sourceTime"]
+	precision := tcs.Options["precision"]
+	sourceTime := tcs.Options["sourceTime"]
 	if sourceTime == "ERR" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Incorrect timestamp format"})
 		return

@@ -66,7 +66,7 @@ func templateFuncRegister(router *gin.Engine) {
 			t := time.UnixMilli(ts).In(location)
 			return t.Format("2006-01-02 15:04:05")
 		},
-		"getUserNameById": func(userMap map[int64]string, id int64) string {
+		"getUsernameById": func(userMap map[int64]string, id int64) string {
 			return userMap[id]
 		},
 	})

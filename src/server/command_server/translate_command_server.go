@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-type TranslateCommand struct {
+type TranslateServer struct {
 	BaseCommand
 }
 
@@ -55,13 +55,13 @@ var supportLanguages = map[string]string{
 	"ZH":    "Chinese(simplified)",
 }
 
-func (tc *TranslateCommand) ParseCommand(stdin string) {
+func (ts *TranslateServer) ParseCommand(stdin string) {
+	ts.Options = make(map[string]string)
 	rawParts := strings.Split(stdin, " ")
 	parts := utils.RemoveElements(rawParts, "").([]string)
-	tc.Required = make(map[string]string)
 	for i := 0; i < len(parts); i++ {
 		arg := parts[i]
-		if tc.Required["text"] == "" {
+		if ts.Options["text"] == "" {
 			switch strings.ToUpper(arg) {
 			case "-TARGET", "-T":
 				if i+1 < len(parts) {
@@ -70,33 +70,33 @@ func (tc *TranslateCommand) ParseCommand(stdin string) {
 					if !ok {
 						return
 					}
-					tc.Required["targetLang"] = strings.ToUpper(parts[i])
+					ts.Options["targetLang"] = strings.ToUpper(parts[i])
 				}
 				continue
 			}
 		}
-		tc.Required["text"] += arg + " "
+		ts.Options["text"] += arg + " "
 	}
-	tc.Required["text"] = strings.TrimRight(tc.Required["text"], " ")
-	if tc.Required["targetLang"] == "" {
-		tc.Required["targetLang"] = "EN-US"
+	ts.Options["text"] = strings.TrimRight(ts.Options["text"], " ")
+	if ts.Options["targetLang"] == "" {
+		ts.Options["targetLang"] = "EN-US"
 	}
 }
 
-func (tc *TranslateCommand) ExecuteCommand(c *gin.Context) {
+func (ts *TranslateServer) ExecuteCommand(c *gin.Context) {
 	ok, returnValue := getDeepLAPIKey(c)
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"response": returnValue})
 		return
 	}
 
-	targetLang := tc.Required["targetLang"]
+	targetLang := ts.Options["targetLang"]
 	if targetLang == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unsupported target languages."})
 		return
 	}
 
-	text := tc.Required["text"]
+	text := ts.Options["text"]
 	if text == "" {
 		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Please enter the text to be translated."})
 		return

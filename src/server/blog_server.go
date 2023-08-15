@@ -21,8 +21,8 @@ import (
 const articlesPerPage = 10
 
 func BlogListHandler(c *gin.Context) {
-	blogsDao := dao.NewBlogsDao()
-	userEntityDao = *dao.NewUserEntityDao()
+	blogsRODao := dao.NewReadOnlyBlogsDao()
+	userEntityDao = *dao.NewReadOnlyUserEntityDao()
 	res, err := rdb.Get(ctx, "blogCounts").Result()
 	var (
 		articleCounts        dao.BlogsCounts
@@ -34,12 +34,26 @@ func BlogListHandler(c *gin.Context) {
 	authorName := c.Query("authorName")
 	page, _ := strconv.Atoi(c.Query("page"))
 	classification := c.Query("classification")
+	title := c.Query("title")
 	if err != nil {
-		articleCounts = updateBlogsCount(blogsDao)
+		articleCounts = updateBlogsCount(blogsRODao)
 	}
 	err = json.Unmarshal([]byte(res), &articleCounts)
 	if c.Request.Method == http.MethodGet && authorName != "" {
 		userId, _ := userEntityDao.SearchUserId(authorName)
+		if userId == 0 {
+			paginationHTML := generatePaginationHTML(totalPages, page)
+			classificationHTML := generateBlogClassificationHTML(model.BlogClassification(classification))
+			c.HTML(http.StatusOK, "bloglist.html",
+				gin.H{
+					"title":              "Blogs",
+					"articles":           articlesProfilesList,
+					"userIdUsernameMap":  userIdUsernameMap,
+					"classificationHTML": template.HTML(classificationHTML),
+					"paginationHTML":     template.HTML(paginationHTML),
+				})
+			return
+		}
 		userAuth := middleware.GetUserAuth(c)
 		var onlyVisible bool
 		if userId != userAuth.UserId {
@@ -48,10 +62,10 @@ func BlogListHandler(c *gin.Context) {
 			onlyVisible = false
 		}
 		count = getBlogCount(articleCounts, userId, classification, onlyVisible)
-		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsDao, userEntityDao, userId, classification, page, onlyVisible)
+		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsRODao, userEntityDao, userId, title, classification, page, onlyVisible)
 	} else if c.Request.Method == http.MethodGet && authorName == "" {
 		count = getBlogCount(articleCounts, 0, classification, false)
-		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsDao, userEntityDao, 0, classification, page, false)
+		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsRODao, userEntityDao, 0, title, classification, page, false)
 	}
 	totalPages = int(math.Ceil(float64(count) / float64(articlesPerPage)))
 	if page > totalPages {
@@ -61,12 +75,11 @@ func BlogListHandler(c *gin.Context) {
 	}
 	paginationHTML := generatePaginationHTML(totalPages, page)
 	classificationHTML := generateBlogClassificationHTML(model.BlogClassification(classification))
-	fmt.Println(c.Request.URL)
 	c.HTML(http.StatusOK, "bloglist.html",
 		gin.H{
 			"title":              "Blogs",
 			"articles":           articlesProfilesList,
-			"userIdUserNameMap":  userIdUsernameMap,
+			"userIdUsernameMap":  userIdUsernameMap,
 			"classificationHTML": template.HTML(classificationHTML),
 			"paginationHTML":     template.HTML(paginationHTML),
 		})
@@ -125,8 +138,8 @@ func ReadHandle(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "404.html", gin.H{"title": "Blog Not Found", "text": "404 - Article does not exist."})
 		return
 	}
-	blogsDao := dao.NewBlogsDao()
-	entity := blogsDao.GetBlogDetail(title[1:])
+	blogsRODao := dao.NewReadOnlyBlogsDao()
+	entity := blogsRODao.GetBlogDetail(title[1:])
 	if entity.Id == 0 {
 		c.HTML(http.StatusNotFound, "404.html", gin.H{"title": "Blog Not Found", "text": "404 - Article does not exist."})
 		return
@@ -136,6 +149,7 @@ func ReadHandle(c *gin.Context) {
 	} else {
 		entity.TotalReviews += 1
 		entity.UpdatedAt = utils.ConvertToMilliTime(utils.GetCurrentTime())
+		blogsDao := dao.NewBlogsDao()
 		blogsDao.Save(&entity)
 		userAuth := middleware.GetUserAuth(c)
 		if userAuth.UserId == entity.UserId {
@@ -178,8 +192,8 @@ func getBlogCount(blogsCounts dao.BlogsCounts, userId int64, classification stri
 	return blogCount
 }
 
-func getBlogProfilesList(blogsDao *dao.BlogsDao, userDao dao.UserEntityDao, userId int64, classification string, page int, onlyVisible bool) ([]dao.BlogProfile, map[int64]string) {
-	blogProfilesList := blogsDao.GetBlogProfiles(userId, classification, page-1, onlyVisible)
+func getBlogProfilesList(blogsRODao *dao.BlogsDao, userRODao dao.UserEntityDao, userId int64, title, classification string, page int, onlyVisible bool) ([]dao.BlogProfile, map[int64]string) {
+	blogProfilesList := blogsRODao.GetBlogProfiles(userId, title, classification, page-1, onlyVisible)
 	var userIdList []int64
 	deDuplicateMap := make(map[int64]bool)
 	for _, profile := range blogProfilesList {
@@ -188,7 +202,7 @@ func getBlogProfilesList(blogsDao *dao.BlogsDao, userDao dao.UserEntityDao, user
 			userIdList = append(userIdList, profile.UserId)
 		}
 	}
-	userList := userDao.FindUserListByUserId(userIdList)
+	userList := userRODao.FindUserListByUserId(userIdList)
 	userIdUsernameMap := make(map[int64]string)
 	for _, user := range userList {
 		userIdUsernameMap[user.Id] = user.Username

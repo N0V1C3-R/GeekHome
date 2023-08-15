@@ -141,14 +141,13 @@ var MorseCodeToCharMap = map[MorseCode]rune{
 }
 
 func (ms *MorseServer) ParseCommand(stdin string) {
+	ms.Options = make(map[string]string)
 	isValid := utils.CheckStringWithRegex(strings.ToUpper(stdin), "^[ A-Z0-9.:,;?='/!-\"()$&@+_]*$")
 	if !isValid {
-		ms.Options = make(map[string]string)
 		ms.Options["error"] = "ERROR: Illegal input, the supported input is English letters and . :,;? ='/! -\"()$&@+_"
 		return
 	}
-	ms.Required = make(map[string]string)
-	ms.Required["stdin"] = stdin
+	ms.Options["stdin"] = stdin
 }
 
 func (ms *MorseServer) ExecuteCommand(c *gin.Context) {
@@ -156,19 +155,18 @@ func (ms *MorseServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"response": ms.Options["error"]})
 		return
 	}
-	encodeRes := convertToMorseCode(ms.Required["stdin"])
-	c.JSON(http.StatusOK, gin.H{"response": fmt.Sprintf("Input: %s"+"\n"+"Output: %s", ms.Required["stdin"], encodeRes)})
+	encodeRes := convertToMorseCode(ms.Options["stdin"])
+	c.JSON(http.StatusOK, gin.H{"response": fmt.Sprintf("Input: %s"+"<br>"+"Output: %s", ms.Options["stdin"], encodeRes)})
 }
 
 func (es *EsromServer) ParseCommand(stdin string) {
+	es.Options = make(map[string]string)
 	isValid := utils.CheckStringWithRegex(stdin, "^[ .-]*$")
 	if !isValid {
-		es.Options = make(map[string]string)
 		es.Options["error"] = "ERROR: Illegal Morse code input"
 		return
 	}
-	es.Required = make(map[string]string)
-	es.Required["stdin"] = stdin
+	es.Options["stdin"] = stdin
 }
 
 func (es *EsromServer) ExecuteCommand(c *gin.Context) {
@@ -176,8 +174,9 @@ func (es *EsromServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"response": es.Options["error"]})
 		return
 	}
-	decodeRes := convertFromMorseCode(es.Required["stdin"])
-	c.JSON(http.StatusOK, gin.H{"response": fmt.Sprintf("Input: %s"+"\n"+"Output: %s", es.Required["stdin"], decodeRes)})
+	decodeRes := convertFromMorseCode(es.Options["stdin"])
+
+	c.JSON(http.StatusOK, gin.H{"response": fmt.Sprintf("Input: %s"+"<br>"+"Output: %s", es.Options["stdin"], decodeRes)})
 }
 
 func convertToMorseCode(message string) MorseCode {

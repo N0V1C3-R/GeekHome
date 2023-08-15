@@ -18,25 +18,42 @@ func EncryptString(s string) string {
 	return fmt.Sprintf("%x", lastEncryptData)
 }
 
-func GeneratePassword() string {
+func GeneratePassword(complexities, passwordLength int) string {
 	const (
-		passwordLength   = 12
 		lowerLetter      = "abcdefghijklmnopqrstuvwxyz"
 		upperLetter      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		digit            = "0123456789"
-		specialCharacter = "!@#$%^&*_+<>?,.:"
+		specialCharacter = "!@#$%^&*?"
 	)
+	var conditions []string
+	if complexities&8 > 0 {
+		conditions = append(conditions, lowerLetter)
+	}
+	if complexities&4 > 0 {
+		conditions = append(conditions, upperLetter)
+	}
+	if complexities&2 > 0 {
+		conditions = append(conditions, digit)
+	}
+	if complexities&1 > 0 {
+		conditions = append(conditions, specialCharacter)
+	}
+
 	rand.Seed(ConvertToNanoTime(GetCurrentTime()))
 
 	password := make([]byte, passwordLength)
-	password[rand.Intn(passwordLength)] = lowerLetter[rand.Intn(len(lowerLetter))]
-	password[rand.Intn(passwordLength)] = upperLetter[rand.Intn(len(upperLetter))]
-	password[rand.Intn(passwordLength)] = digit[rand.Intn(len(digit))]
-	password[rand.Intn(passwordLength)] = specialCharacter[rand.Intn(len(specialCharacter))]
+	for _, charset := range conditions {
+		index := rand.Intn(passwordLength)
+		for password[index] != 0 {
+			index = rand.Intn(passwordLength)
+		}
+		char := charset[rand.Intn(len(charset))]
+		password[index] = char
+	}
 
 	for i := 0; i < passwordLength; i++ {
 		if password[i] == 0 {
-			charset := lowerLetter + upperLetter + digit + specialCharacter
+			charset := conditions[rand.Intn(len(conditions))]
 			password[i] = charset[rand.Intn(len(charset))]
 		}
 	}
@@ -94,13 +111,13 @@ func PKCS7Unpadding(data []byte) []byte {
 
 func generateKey(salt string) []byte {
 	key := make([]byte, 32)
-	copy(key[:16], []byte(salt))
-	copy(key[16:], []byte(salt))
+	copy(key[:16], salt)
+	copy(key[16:], salt)
 	return key
 }
 
 func generateIV(salt string) []byte {
 	iv := make([]byte, aes.BlockSize)
-	copy(iv, []byte(salt))
+	copy(iv, salt)
 	return iv
 }

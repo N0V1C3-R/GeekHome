@@ -16,6 +16,11 @@ func NewBlogsDao() *BlogsDao {
 	return &BlogsDao{*baseDao, schema}
 }
 
+func NewReadOnlyBlogsDao() *BlogsDao {
+	schema := db.Table(model.NewBlogs().TableName())
+	return &BlogsDao{*readOnlyBaseDao, schema}
+}
+
 func (dao *BlogsDao) SearchTitle(title string) (article model.Blogs) {
 	_ = dao.Schema.Where("title = ?", title).Find(&article)
 	return
@@ -121,10 +126,13 @@ type BlogProfile struct {
 	CreatedAt    int64
 }
 
-func (dao *BlogsDao) GetBlogProfiles(userId int64, classification string, page int, onlyVisible bool) []BlogProfile {
+func (dao *BlogsDao) GetBlogProfiles(userId int64, title, classification string, page int, onlyVisible bool) []BlogProfile {
 	query := dao.Schema.Select("user_id, title, is_anonymous, total_reviews, stars, created_at").Where("deleted_at = 0")
 	if userId != 0 {
 		query = query.Where("user_id = ?", userId)
+	}
+	if title != "" {
+		query = query.Where("title LIKE '%" + title + "%'")
 	}
 	if classification != "" {
 		query = query.Where("classification = ?", classification)
