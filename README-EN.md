@@ -6,7 +6,7 @@
 ![Static Badge](https://img.shields.io/badge/MySQL-8.0-496D90)
 ![Static Badge](https://img.shields.io/badge/Redis-7.0-C54436)
 
-# 目录
+# Topic
 * [Project Description](#project-description)
 * [Quick Start](#quick-start)
 * [Instructions for use](#instructions-for-use)
@@ -81,6 +81,22 @@ Step 6: Click to [register](http://localhost:5466/register "link") a super admin
 >
 > `ban <SERVICE_NAME>` Disable private API Key for a service (used in login state)
 >
+> `chmod <EMAIL> <MOD>` Modifying user rights (administrator function)
+>
+> `cd [PATH]` Switching Favorite Catalogs (used in login state)
+>
+> `ls [-l] [PATH]` Displaying the contents of the favorites catalog (used in login state)
+>
+> `pwd` View the path to the current collection directory (used in login state)
+>
+> `mkdir [PATH]` Create Favorites (used in login state)
+>
+> `rm <PATH>` Delete Favorites or Favorite Content (used in login state)
+>
+> `like <NAME> <URL>` Favorite pages or content (used in login state)
+>
+> `mv <-fnp> <OLD_NAME> <NEW_NAME>` For moving favorites or updating favorite records (used in login state)
+>
 > `open [-r | -n] <URL>` Open a link command, -r and -n for the current tab jump and new tab open, the default for the new tab open
 >
 > `login` Command to jump to the login page
@@ -125,6 +141,7 @@ Step 6: Click to [register](http://localhost:5466/register "link") a super admin
 ├── go.mod
 ├── go.sum
 ├── init.sql
+├── help.json ------------------------ // Command Help Notes
 └── src ------------------------------ // Project Source Code Catalog
     ├── crontab_job ------------------ // Timing script task directory, edit the timing script in this directory
     ├── database --------------------- // MySQL Services Related Code Catalog

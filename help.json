@@ -569,7 +569,7 @@
     "aliasNames": [],
     "profile": "Updating the private API Key set by a service",
     "detail": {
-      "usage": "upk <SERVICE> <API_KEY",
+      "usage": "upk <SERVICE> <API_KEY>",
       "desc": "The 'upk' command allows you to update the private API key associated with a specific service. This command enables you to modify the encrypted API key that you have previously added for a particular service. The API key is required to authenticate your requests and access authorized resources provided by that service.",
       "options": {
         "SERVICE": [
@@ -636,6 +636,211 @@
         "If you suspect any unauthorized access or misuse of your API keys, take appropriate actions to protect your account.",
         "Try not to use this command in public places or in environments with unsecured networks.",
         "Command needs to be used while logged in."
+      ]
+    }
+  },
+  {"commandName": "chmod",
+    "aliasNames": [],
+    "profile": "Administrators are used to modify member privilege operations",
+    "detail": {
+      "usage": "chmod <EMAIL> <MOD>",
+      "desc": "The 'chmod' command is used to modify user privileges. Administrator accounts can use this command to modify the privileges of other accounts, but you cannot elevate the privileges of the target account to the administrator level, nor can you manipulate other administrator privileges.",
+      "options": {
+        "EMAIL": [
+          "required",
+          "Used to specify the account for operation, email is the registered email account"
+        ],
+        "MOD": [
+          "required",
+          "'+' is used to raise the user's privilege level, '-' is used tto lower the user's privilege level."
+        ]
+      },
+      "examples": [
+        "chmod test@test.com + : Increase the permission level of user plac3bo@plac3bo.com.",
+        "chmod test@test.com - : Reduce the permission level of user plac3bo@plac3bo.com."
+      ],
+      "notes": [
+        "The 'chmod' command is only available to administrators and above while logged in.",
+        "The 'chmod' command allows you to raise or lower multiple levels at once, and is used by increasing the number of mod parameters, such as ++/--.",
+        "The 'chmod' command can elevate the target user level to a maximum of one level below the operator privilege level, with a minimum of limiting the user privileges to normal users."
+      ]
+    }
+  },
+  {"commandName": "cd",
+    "aliasNames": [],
+    "profile": "Switching favorite directory",
+    "detail": {
+      "usage": "cd [FAVORITE_DIRECTORY]",
+      "desc": "The 'cd' command is used to change the current working directory (Change Directory). By using the cd command, you can navigate to a different directory or favorite in the Favorites system.",
+      "options": {
+        "FAVORITE_DIRECTORY": [
+          "Option",
+          "'FAVORITE_DIRECTORY' is used to specify the path of the favorite to switch to. When this parameter is not used, switch back to the root directory."
+        ]
+      },
+      "examples": [
+        "cd : Switch back to the root directory regardless of the current working directory.",
+        "cd test1 : Switch to the test1 directory in the current directory (if the test1 directory exists).",
+        "cd ../test2 : Switch to the test2 directory in the upper directory (if the test2 directory exists).",
+        "cd /test1/test3: Switch to the test3 directory under the test1 directory in the root directory (if it exists).",
+        "cd ./test4 : Same as 'cd test4', switch to the test4 directory in the current directory (if it exists)."
+      ],
+      "notes": [
+        "Since the 'cd' command requires a favorites system, it needs to be used while logged on",
+        "The 'cd' command is basically the same as the operating system's cd command."
+      ]
+    }
+  },
+  {"commandName": "ls",
+    "aliasNames": [],
+    "profile": "List the favorites and web pages under this favorite",
+    "detail": {
+      "usage": "ls [-lL] [FAVORITE_DIRECTORY]",
+      "desc": "The 'ls' command is used to list the collection records under a specified path.",
+      "options": {
+        "-l, -L": [
+          "Option",
+          "Display favorite information in a detailed list."
+        ],
+        "FAVORITE_DIRECTORY": [
+          "Option",
+          "'FAVORITE_DIRECTORY' is used to specify the collection directory, if this parameter is not used it defaults to the current working collection directory."
+        ]
+      },
+      "examples": [
+        "ls : List subdirectories and pages in the current collection directory.",
+        "ls -l : List subdirectories and web pages in the current favorite directory in a detailed list.",
+        "ls -l test1 : List the directories and web pages in the test1 directory in the current directory."
+      ],
+      "notes": [
+        "Since the 'ls' command requires a favorites system, it needs to be used while logged on.",
+        "The 'ls' command is basically the same as the operating system's cd command."
+      ]
+    }
+  },
+  {"commandName": "pwd",
+    "aliasNames": [],
+    "profile": "View the current collection catalog",
+    "detail": {
+      "usage": "pwd",
+      "desc": "The 'pwd' command is used to view the current collection directory.",
+      "options": {},
+      "examples": [
+        "pwd : Returns the path to the current favorite directory."
+      ],
+      "notes": [
+        "Since the 'pwd' command requires a favorites system, it needs to be used while logged on.",
+        "The 'pwd' command is basically the same as the operating system's cd command."
+      ]
+    }
+  },
+  {"commandName": "mkdir",
+    "aliasNames": [],
+    "profile": "Creating a favorites catalog",
+    "detail": {
+      "usage": "mkdir <DIRECTORY>",
+      "desc": "The 'mkdir' command is used to create a new collection directory.",
+      "options": {
+        "DIRECTORY": [
+          "Required",
+          "'DIRECTORY' can be a relative path to the current favorite or an absolute path."
+        ]
+      },
+      "examples": [
+        "mkdir test1 : Create a new test1 directory in the current directory.",
+        "mkdir /test2 : Create a test2 directory in the root directory."
+      ],
+      "notes": [
+        "Since the 'mkdir' command requires a favorites system, it needs to be used while logged on.",
+        "The 'mkdir' command is basically the same as the operating system's cd command.",
+        "The 'mkdir' command creates a new directory if possible, provided that no directory of the same name exists in the destination path",
+        "Due to the problem of development resources, temporarily does not support like the operating system or browser to change the favorite path and name, please note that this point, the follow-up support will be put on the agenda as soon as possible!"
+      ]
+    }
+  },
+  {"commandName": "rm",
+    "aliasNames": [],
+    "profile": "Delete a favorite or favorite pages record",
+    "detail": {
+      "usage": "rm <NAME>",
+      "desc": "The 'rm' command is used to delete a specific favorite or web page.",
+      "options": {
+        "NAME": [
+          "Required",
+          "'Name' is used to specify the path of the target favorite or the name of the favorite page."
+        ]
+      },
+      "examples": [
+        "rm /test1 : Delete favorites and pages in the root directory with the name test1.",
+        "rm ../google : I think Google should be a web page, then this command is used to delete the record of web page favorites with the name Google in the upper level favorites."
+      ],
+      "notes": [
+        "Since the 'rm' command requires a favorites system, it needs to be used while logged on.",
+        "The 'rm' command is basically the same as the operating system's cd command, but for the time being it is not as powerful.",
+        "Since the rm command doesn't have a confirmation mechanism added to it yet, it will really delete the target if it exists...",
+        "It will delete both web records and favorite records with the same name, so as always, use caution and be careful with the naming, the developer will update it as soon as possible!"
+      ]
+    }
+  },
+  {"commandName": "like",
+    "aliasNames": [],
+    "profile": "Favorite a web record.",
+    "detail": {
+      "usage": "like <NAME> <URL>",
+      "desc": "",
+      "options": {
+        "NAME": [
+          "Required",
+          "'Name' is used to specify the alias you set up for your favorite pages for ease of use."
+        ]
+      },
+      "examples": [
+        "like Google https://www.google.com : Favorite google and named Google."
+      ],
+      "notes": [
+        "The like command is exactly what it sounds like, if you like a site or its content then bookmark it!",
+        "Like allows you to collect the website address, in fact, you can also collect other text data, but the content can not be too much (in fact, mainly because the developer is too lazy do not want to do more processing).",
+        "Please do not use special symbols in name."
+      ]
+    }
+  },
+  {"commandName": "mv",
+    "aliasNames": [],
+    "profile": "Move favorites or rename records or directories",
+    "detail": {
+      "usage": "mv <-fF | -nN | -pP> <OLD_NAME> <NEW_NAME>",
+      "desc": "The 'mv' command is used to move favorites or rename records or directories.",
+      "options": {
+        "-f, -F": [
+          "Required",
+          "'Folder' - Specify the mode as move favorite path or favorite rename."
+        ],
+        "-n, -N": [
+          "Required",
+          "'Nickname' - Specify the mode to rename the collection record."
+        ],
+        "-p, -P": [
+          "Required",
+          "'Page' - Specify the mode to modify the URL of the collection record or the contents of the collection."
+        ],
+        "OLD_NAME": [
+          "Required",
+          "Used to specify the source favorite path when the mode is Folder, and the source record name when the mode is Nickname and Page."
+        ],
+        "NEW_NAME": [
+          "Required",
+          "Used to specify a new favorite path when the mode is Folder, to specify a new name for the source record when the mode is Nickname, and to specify a new URL or content when the mode is Page."
+        ]
+      },
+      "examples": [
+        "mv -f test1 test2 : Change the name of the favorite test1 to test2.",
+        "mv -n google Google : Change the record name of the google favorites record to Google.",
+        "mv -p Google https://www.google.com : Modifying the contents of a Google record."
+      ],
+      "notes": [
+        "Since the 'mv' command requires a favorites system, it needs to be used while logged on.",
+        "The 'mv' command is basically the same as the operating system's cd command, but for the time being it is not as powerful.",
+        "This feature is now a half-finished product, does not support modifying and moving favorites, and can only operate the data in the current directory, the subsequent development will be put on the agenda as soon as possible!"
       ]
     }
   },
