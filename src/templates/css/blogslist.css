@@ -1,6 +1,7 @@
 body {
     font-family: "得意黑", system-ui;
     background-color: #f5f5f5;
+    scrollbar-width: none;
 }
 
 #blog-navigation {
@@ -15,7 +16,8 @@ body {
     border-bottom: 1px solid rgba(255,255,255,.08);
     margin-left: -8px;
     padding: 2px;
-    height: 45px
+    height: 45px;
+    z-index: 1000;
 }
 
 #create-btn {
@@ -43,6 +45,8 @@ h1 {
 }
 
 .blog-list {
+    transform: translateX(5%);
+    width: 90%;
     list-style-type: none;
     padding: 0;
     margin-bottom: 20px;
@@ -76,6 +80,7 @@ h1 {
 .pagination {
     display: flex;
     justify-content: center;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
@@ -88,10 +93,15 @@ h1 {
     border-radius: 5px;
 }
 
-#listbox {
-    position: fixed;
-    top: 55px;
+#listBox {
+    margin-top: 45px;
     width: 100%;
+    height: auto;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 .search-form {
@@ -110,9 +120,4 @@ h1 {
 
 .filter-select {
     padding: 5px;
-}
-
-.blog-list {
-    transform: translateX(5%);
-    width: 90%;
 }

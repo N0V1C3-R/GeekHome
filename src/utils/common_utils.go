@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -65,8 +66,18 @@ func SerializationObj(obj interface{}) string {
 }
 
 func CreateFolder(filePath string) {
-	if err := os.MkdirAll(filePath, 0777); err != nil {
-		panic(err)
+	if fileInfo, err := os.Stat(filePath); os.IsNotExist(err) {
+		if err = os.MkdirAll(filePath, 0755); err != nil {
+			panic(err)
+		}
+	} else {
+		currentPermission := fileInfo.Mode().Perm()
+		newPermission := os.FileMode(0755)
+		newMode := currentPermission | newPermission
+		err = os.Chmod(filePath, newMode)
+		if err != nil {
+
+		}
 	}
 }
 
@@ -170,4 +181,28 @@ func CallFunction(funcName interface{}, args ...interface{}) interface{} {
 		return resultValues[0].Interface()
 	}
 	return nil
+}
+
+func ResolvePath(absolutePath, relativePath string) string {
+	if filepath.IsAbs(relativePath) {
+		targetPath, _ := filepath.Abs(relativePath)
+		return targetPath
+	}
+
+	targetPath := filepath.Join(absolutePath, relativePath)
+	targetPath, _ = filepath.Abs(targetPath)
+	return targetPath
+}
+
+func GetPathParts(absolutePath string) []string {
+	var pathParts []string
+	for {
+		dir := filepath.Dir(absolutePath)
+		if dir == absolutePath {
+			break
+		}
+		pathParts = append([]string{filepath.Base(absolutePath)}, pathParts...)
+		absolutePath = dir
+	}
+	return pathParts
 }

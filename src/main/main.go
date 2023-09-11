@@ -3,13 +3,33 @@ package main
 import (
 	"WebHome/src/server"
 	"WebHome/src/server/command_server"
+	"WebHome/src/server/middleware"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"html/template"
+	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 )
 
+func init() {
+	_, file, _, _ := runtime.Caller(0)
+	_ = os.Chdir(filepath.Dir(file))
+	var configPath string
+	if os.Getenv("ENVIRONMENT") == "local" {
+		configPath = filepath.Join("..", "..", "config", ".env_local")
+	} else {
+		configPath = filepath.Join("..", "..", "config", ".env")
+	}
+	_ = godotenv.Load(configPath)
+}
+
 func main() {
 	r := gin.Default()
+	r.Use(middleware.LogMiddleware())
+	r.Use(middleware.UpdateAuthMiddleware())
 	r.MaxMultipartMemory = 2 << 20
 	templateFuncRegister(r)
 	routingRegistration(r)
@@ -17,9 +37,12 @@ func main() {
 }
 
 func routingRegistration(router *gin.Engine) {
-	router.LoadHTMLGlob("../../templates/html/*")
+	_, file, _, _ := runtime.Caller(0)
+	_ = os.Chdir(filepath.Dir(file))
+	fmt.Println(file)
+	router.LoadHTMLGlob("../templates/html/*")
 	router.StaticFile("/favicon.ico", "/favicon.ico")
-	router.Static("/templates", "../../templates")
+	router.Static("/templates", "../templates")
 
 	router.NoRoute(server.PageNotFound)
 

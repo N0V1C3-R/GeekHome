@@ -4,6 +4,7 @@ import (
 	"WebHome/src/database/dao"
 	"WebHome/src/database/model"
 	"WebHome/src/utils"
+	"encoding/binary"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -57,16 +58,19 @@ func postLoginHandle(c *gin.Context) {
 			return
 		}
 		flushLastLoginTime(userEntity.Id)
+		role := make([]byte, 4)
+		binary.LittleEndian.PutUint32(role, uint32(userEntity.Role))
 		userAuth := userCookie{
-			UserId:   userEntity.Id,
-			Username: userEntity.Username,
-			Role:     utils.EncryptPlainText([]byte(userEntity.Role), userEntity.Username),
+			UserId:      userEntity.Id,
+			Username:    userEntity.Username,
+			Role:        utils.EncryptPlainText(role, userEntity.Username),
+			WorkingPath: "/",
 		}
 		loginInfo := loginInfo{
 			Username: userEntity.Username,
 			IP:       c.ClientIP(),
 		}
-		c.SetCookie("userAuthorization", utils.SerializationObj(userAuth), 3600, "/", "", false, true)
+		c.SetCookie("userAuthorization", utils.SerializationObj(userAuth), 3600, "/", "", true, true)
 		c.SetCookie("__userInfo", utils.SerializationObj(loginInfo), 3600, "/", "", false, false)
 		c.SetSameSite(http.SameSiteStrictMode)
 		c.JSON(http.StatusFound, gin.H{"response": "Login successful!"})

@@ -47,7 +47,7 @@ func (hs *HelpServer) ParseCommand(stdin string) {
 }
 
 func (hs *HelpServer) ExecuteCommand(c *gin.Context) {
-	file, _ := os.Open("../../../help.json")
+	file, _ := os.Open("../../help.json")
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
@@ -80,7 +80,7 @@ func (ms *ManServer) ExecuteCommand(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"response": ms.Options["Error"]})
 		return
 	}
-	file, _ := os.Open("../../../help.json")
+	file, _ := os.Open("../../help.json")
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {

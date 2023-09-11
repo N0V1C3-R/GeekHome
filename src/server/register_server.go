@@ -164,6 +164,8 @@ func RegisterUser(c *gin.Context) {
 		password := r.Password
 		userEntity := (*model.NewUserEntity()).CreateUser(username, email, password)
 		userEntityDao.CreateClientUser(userEntity)
+		favoritesFolderDao := dao.NewFavoritesFolderDao()
+		favoritesFolderDao.CreatRecord(userEntity.Id, false, ".", "/", "/")
 		_, _ = rdb.Del(ctx, requestID).Result()
 		c.JSON(http.StatusFound, gin.H{"response": "Registration is successful, will jump to the login screen soon."})
 	}()

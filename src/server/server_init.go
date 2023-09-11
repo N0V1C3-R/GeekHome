@@ -28,9 +28,10 @@ type emailVerifyForm struct {
 }
 
 type userCookie struct {
-	UserId   int64  `json:"uid"`
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	UserId      int64  `json:"uid"`
+	Username    string `json:"username"`
+	Role        string `json:"role"`
+	WorkingPath string `json:"workingPath"`
 }
 
 type loginInfo struct {
@@ -79,12 +80,12 @@ func init() {
 			judge0API = os.Getenv("JUDGE0_API_URL")
 			judge0TokenUrl = os.Getenv("JUDGE0_TOKEN_URL")
 			blogClassifications = []model.BlogClassification{
-				"Programming Languages",
-				"Operating System",
-				"Database",
-				"News",
-				"Network Security",
-				"NMiscellaneous Discussions",
+				model.ProgrammingLanguages,
+				model.OperatingSystem,
+				model.Database,
+				model.News,
+				model.NetworkSecurity,
+				model.NMiscellaneousDiscussions,
 			}
 		})
 }

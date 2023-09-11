@@ -88,6 +88,17 @@ func init() {
 		// Disable 3rd-party service API
 		"ban": reflect.TypeOf(&BanAPIKeyServer{}),
 
+		// Modifying user privilege levels
+		"chmod": reflect.TypeOf(&ChmodCommandServer{}),
+
+		"cd":    reflect.TypeOf(&CdServer{}),
+		"pwd":   reflect.TypeOf(&PwdServer{}),
+		"ls":    reflect.TypeOf(&LsServer{}),
+		"mkdir": reflect.TypeOf(&MkdirServer{}),
+		"rm":    reflect.TypeOf(&RmServer{}),
+		"like":  reflect.TypeOf(&LikeServer{}),
+		"mv":    reflect.TypeOf(&MvServer{}),
+
 		// Access to the online IDE interface
 		"codev": reflect.TypeOf(&CodeVServer{}),
 

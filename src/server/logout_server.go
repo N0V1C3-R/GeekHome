@@ -9,7 +9,7 @@ import (
 func LogoutHandle(c *gin.Context) {
 	userAuth := middleware.GetUserAuth(c)
 	if userAuth.UserId != 0 {
-		c.SetCookie("__userInfo", "", -1, "/", "", true, true)
+		c.SetCookie("__userInfo", "", -1, "/", "", false, true)
 		c.SetCookie("userAuthorization", "", -1, "/", "", true, true)
 		c.JSON(http.StatusOK, gin.H{"response": true})
 	} else {

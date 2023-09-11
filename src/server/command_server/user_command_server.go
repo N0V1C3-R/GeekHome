@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -31,7 +32,7 @@ type BanAPIKeyServer struct {
 	BaseCommand
 }
 
-type AliasCommandServer struct {
+type ChmodCommandServer struct {
 	BaseCommand
 }
 
@@ -74,7 +75,7 @@ func (rs *RenameServer) ExecuteCommand(c *gin.Context) {
 		return
 	}
 	userAuth.Username = newUserName
-	c.SetCookie("userAuthorization", utils.SerializationObj(userAuth), 3600, "/", "", false, true)
+	c.SetCookie("userAuthorization", utils.SerializationObj(userAuth), 3600, "/", "", true, true)
 	loginInfo := map[string]string{
 		"Username": newUserName,
 		"IP":       c.ClientIP(),
@@ -246,12 +247,65 @@ func (ban *BanAPIKeyServer) ExecuteCommand(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"response": fmt.Sprintf("%s Service API disabled successfully", thirdPartyServiceName)})
 }
 
-func (acs *AliasCommandServer) ParseCommand(stdin string) {
-
+func (ccs *ChmodCommandServer) ParseCommand(stdin string) {
+	ccs.Options = make(map[string]string)
+	rawParts := strings.Split(stdin, " ")
+	parts := utils.RemoveElements(rawParts, "").([]string)
+	for i := 0; i < len(parts); i++ {
+		arg := parts[i]
+		if ccs.Options["targetUser"] == "" {
+			ccs.Options["targetUser"] = arg
+			continue
+		}
+		if ccs.Options["chmod"] == "" {
+			ccs.Options["chmod"] = arg
+			continue
+		}
+	}
 }
 
-func (acs *AliasCommandServer) ExecuteCommand(c *gin.Context) {
-
+func (ccs *ChmodCommandServer) ExecuteCommand(c *gin.Context) {
+	userAuth := middleware.GetUserAuth(c)
+	if userAuth.UserId == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"response": "ERROR: This command needs to be used while logged in."})
+		return
+	}
+	targetUser := ccs.Options["targetUser"]
+	if targetUser == "" {
+		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unknown target audience."})
+		return
+	}
+	chmod := ccs.Options["chmod"]
+	if chmod == "" {
+		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unknown privilege."})
+		return
+	}
+	isValid, shift, direction := validationChmod(chmod)
+	if !isValid {
+		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unknown privilege."})
+		return
+	}
+	userEntityDao := dao.NewUserEntityDao()
+	user := userEntityDao.IsUserExists(targetUser)
+	operatorId, _ := userEntityDao.SearchUserId(userAuth.Username)
+	operator := userEntityDao.FindUserByUserId(operatorId)
+	if user.Id == 0 {
+		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Unknown target audience."})
+		return
+	}
+	if operator.Role < model.Admin {
+		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Insufficient operating privileges."})
+		return
+	}
+	targetRole := user.Role
+	isValid, newRole := validationAuth(operator.Role, targetRole, shift, direction)
+	if !isValid {
+		c.JSON(http.StatusOK, gin.H{"response": "ERROR: Insufficient operating privileges."})
+		return
+	}
+	user.Role = newRole
+	userEntityDao.Updates(user)
+	c.JSON(http.StatusOK, gin.H{"response": "Successfully!"})
 }
 
 func update3rdPartyAPIKey(oldName, newName string, userId int64) bool {
@@ -361,4 +415,38 @@ func disableAPIKey(userId int64, serviceName model.ThirdPartyServiceName) bool {
 		return true
 	}
 	return false
+}
+
+func validationChmod(chmod string) (bool, int, string) {
+	pattern := "^[\\+\\-]+$"
+	re := regexp.MustCompile(pattern)
+	if re.MatchString(chmod) {
+		leftCount := strings.Count(chmod, "+")
+		rightCount := strings.Count(chmod, "-")
+		if leftCount > rightCount {
+			return true, leftCount - rightCount, "<<"
+		} else {
+			return true, rightCount - leftCount, ">>"
+		}
+	} else {
+		return false, 0, ""
+	}
+}
+
+func validationAuth(operator, target model.UserRole, shift int, direction string) (bool, model.UserRole) {
+	if operator <= target {
+		return false, target
+	}
+	var newRole model.UserRole
+	if direction == "<<" {
+		newRole = target << shift
+	} else {
+		newRole = target >> shift
+	}
+	if newRole < model.Client {
+		newRole = model.Client
+	} else if operator <= newRole {
+		newRole = operator >> 1
+	}
+	return true, newRole
 }

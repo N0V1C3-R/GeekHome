@@ -152,6 +152,7 @@ span {
 code {
     display: block;
     text-indent: 2em;
+    white-space: normal;
 }
 
 li {
@@ -167,3 +168,26 @@ tr span.instruction:nth-child(n+2) {
     text-indent: 2ch;
     display: inline-block;
 }
+
+#favorites_list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -5px;
+}
+
+.disabled-link {
+    flex: 1 0 calc(10% - 10px);
+    text-decoration: none;
+    margin: 5px;
+    pointer-events: none;
+    color: #168168 !important;
+}
+
+.enabled-link {
+    flex: 1 0 calc(10% - 10px);
+    text-decoration: none;
+    margin: 5px;
+    color: white !important;
+}
+
+

@@ -62,10 +62,10 @@ func BlogListHandler(c *gin.Context) {
 			onlyVisible = false
 		}
 		count = getBlogCount(articleCounts, userId, classification, onlyVisible)
-		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsRODao, userEntityDao, userId, title, classification, page, onlyVisible)
+		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsRODao, userEntityDao, userId, title, classification, page, articlesPerPage, onlyVisible)
 	} else if c.Request.Method == http.MethodGet && authorName == "" {
 		count = getBlogCount(articleCounts, 0, classification, false)
-		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsRODao, userEntityDao, 0, title, classification, page, false)
+		articlesProfilesList, userIdUsernameMap = getBlogProfilesList(blogsRODao, userEntityDao, 0, title, classification, page, articlesPerPage, false)
 	}
 	totalPages = int(math.Ceil(float64(count) / float64(articlesPerPage)))
 	if page > totalPages {
@@ -93,17 +93,49 @@ func generatePaginationHTML(totalPages, currentPage int) string {
 		buffer.WriteString(`">Pre</a>`)
 	}
 
-	for i := 1; i <= totalPages; i++ {
-		if i == currentPage {
+	if totalPages <= 9 {
+		for i := 1; i <= totalPages; i++ {
+			if i == currentPage {
+				buffer.WriteString(`<span class="current">`)
+				buffer.WriteString(strconv.Itoa(i))
+				buffer.WriteString(`</span>`)
+			} else {
+				buffer.WriteString(`<a href="/blogs?page=`)
+				buffer.WriteString(strconv.Itoa(i))
+				buffer.WriteString(`">`)
+				buffer.WriteString(strconv.Itoa(i))
+				buffer.WriteString(`</a>`)
+			}
+		}
+	} else {
+		if currentPage == 1 {
 			buffer.WriteString(`<span class="current">`)
-			buffer.WriteString(strconv.Itoa(i))
+			buffer.WriteString(strconv.Itoa(1))
 			buffer.WriteString(`</span>`)
 		} else {
-			buffer.WriteString(`<a href="/blogs?page=`)
-			buffer.WriteString(strconv.Itoa(i))
-			buffer.WriteString(`">`)
-			buffer.WriteString(strconv.Itoa(i))
-			buffer.WriteString(`</a>`)
+			generatePageLink(&buffer, 1)
+		}
+		if currentPage > 3 {
+			buffer.WriteString(`<span class="current">...</span>`)
+		}
+		start := currentPage - 2
+		if start < 2 {
+			start = 2
+		}
+		end := currentPage + 2
+		if end > totalPages-1 {
+			end = totalPages - 1
+		}
+		generatePageRange(&buffer, currentPage, start, end)
+		if currentPage < totalPages-3 {
+			buffer.WriteString(`<span class="current">...</span>`)
+		}
+		if currentPage == totalPages {
+			buffer.WriteString(`<span class="current">`)
+			buffer.WriteString(strconv.Itoa(totalPages))
+			buffer.WriteString(`</span>`)
+		} else {
+			generatePageLink(&buffer, totalPages)
 		}
 	}
 
@@ -114,6 +146,26 @@ func generatePaginationHTML(totalPages, currentPage int) string {
 	}
 
 	return buffer.String()
+}
+
+func generatePageLink(buffer *bytes.Buffer, page int) {
+	buffer.WriteString(`<a href="/blogs?page=`)
+	buffer.WriteString(strconv.Itoa(page))
+	buffer.WriteString(`">`)
+	buffer.WriteString(strconv.Itoa(page))
+	buffer.WriteString(`</a>`)
+}
+
+func generatePageRange(buffer *bytes.Buffer, currentPage, start, end int) {
+	for i := start; i <= end; i++ {
+		if i == currentPage {
+			buffer.WriteString(`<span class="current">`)
+			buffer.WriteString(strconv.Itoa(i))
+			buffer.WriteString(`</span>`)
+			continue
+		}
+		generatePageLink(buffer, i)
+	}
 }
 
 func generateBlogClassificationHTML(defaultType model.BlogClassification) string {
@@ -192,8 +244,8 @@ func getBlogCount(blogsCounts dao.BlogsCounts, userId int64, classification stri
 	return blogCount
 }
 
-func getBlogProfilesList(blogsRODao *dao.BlogsDao, userRODao dao.UserEntityDao, userId int64, title, classification string, page int, onlyVisible bool) ([]dao.BlogProfile, map[int64]string) {
-	blogProfilesList := blogsRODao.GetBlogProfiles(userId, title, classification, page-1, onlyVisible)
+func getBlogProfilesList(blogsRODao *dao.BlogsDao, userRODao dao.UserEntityDao, userId int64, title, classification string, page, pageSize int, onlyVisible bool) ([]dao.BlogProfile, map[int64]string) {
+	blogProfilesList := blogsRODao.GetBlogProfiles(userId, title, classification, page-1, pageSize, onlyVisible)
 	var userIdList []int64
 	deDuplicateMap := make(map[int64]bool)
 	for _, profile := range blogProfilesList {
