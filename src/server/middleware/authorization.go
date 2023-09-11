@@ -2,24 +2,25 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
 type UserAuth struct {
-	UserId   int64  `json:"uid"`
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	UserId      int64  `json:"uid"`
+	Username    string `json:"username"`
+	Role        string `json:"role"`
+	WorkingPath string `json:"workingPath"`
 }
 
-func AuthMiddleware() gin.HandlerFunc {
+func UpdateAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authToken, err := c.Cookie("userAuthorization")
-		if err != nil {
-			c.Redirect(302, "/login")
+		cookie, err := c.Cookie("userAuthorization")
+		if err != nil || cookie == "" {
+			c.Next()
 			return
 		}
-		fmt.Println(authToken)
+		c.SetCookie("userAuthorization", cookie, 3600, "/", "", true, true)
+		c.Next()
 	}
 }
 
