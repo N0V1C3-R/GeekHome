@@ -73,6 +73,12 @@ func (dao *UserEntityDao) SearchUserId(username string) (int64, bool) {
 	return user.Id, user.Active
 }
 
+func (dao *UserEntityDao) FindUserByUserId(userId int64) model.UserEntity {
+	var user model.UserEntity
+	dao.Schema.Where("id = ?", userId).Find(&user)
+	return user
+}
+
 func (dao *UserEntityDao) FindUserListByUserId(userIdList []int64) []model.UserEntity {
 	var userList []model.UserEntity
 	dao.Schema.Where("id IN ?", userIdList).Find(&userList)

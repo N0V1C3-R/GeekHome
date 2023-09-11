@@ -1,18 +1,18 @@
 CREATE TABLE IF NOT EXISTS `user_entity` (
-    `id` bigint NOT NULL,
-    `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-    `email` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-    `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-    `role` char(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USER' COMMENT 'SUPER_ADMIN;ADMIN;USER',
-    `active` tinyint(1) NOT NULL DEFAULT '0',
-    `last_login_at` bigint NOT NULL DEFAULT '0',
-    `created_at` bigint NOT NULL DEFAULT '0',
-    `updated_at` bigint NOT NULL DEFAULT '0',
-    `deleted_at` bigint NOT NULL DEFAULT '0',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_username_email_status` (`username`,`email`,`deleted_at`) USING BTREE,
-    UNIQUE KEY `idx_email_status` (`email`,`deleted_at`) USING BTREE,
-    UNIQUE KEY `idx_username_status` (`username`,`deleted_at`) USING BTREE
+   `id` bigint NOT NULL,
+   `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+   `email` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+   `role` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'SUPER_ADMIN;ADMIN;VIP;USER',
+   `active` tinyint(1) NOT NULL DEFAULT '0',
+   `last_login_at` bigint NOT NULL DEFAULT '0',
+   `created_at` bigint NOT NULL DEFAULT '0',
+   `updated_at` bigint NOT NULL DEFAULT '0',
+   `deleted_at` bigint NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `idx_username_email_status` (`username`,`email`,`deleted_at`) USING BTREE,
+   UNIQUE KEY `idx_email_status` (`email`,`deleted_at`) USING BTREE,
+   UNIQUE KEY `idx_username_status` (`username`,`deleted_at`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -61,4 +61,19 @@ CREATE TABLE IF NOT EXISTS `blogs` (
     KEY `idx_user_id` (`user_id`),
     KEY `idx_stars` (`stars`) USING BTREE,
     KEY `idx_classification` (`classification`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `favorites_folder` (
+    `id` bigint NOT NULL,
+    `user_id` bigint NOT NULL,
+    `is_folder` tinyint(1) NOT NULL,
+    `nickname` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `upper` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '/',
+    `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `created_at` bigint NOT NULL DEFAULT '0',
+    `updated_at` bigint NOT NULL DEFAULT '0',
+    `deleted_at` bigint NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_userId_isFolder_upper_nickname_path` (`user_id`,`is_folder`,`upper`,`nickname`,`path`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

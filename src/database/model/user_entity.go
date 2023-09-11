@@ -9,7 +9,7 @@ type UserEntity struct {
 	Username      string   `gorm:"column:username;not null"`
 	Email         string   `gorm:"column:email;not null"`
 	Password      string   `gorm:"column:password;not null"`
-	Role          UserRole `gorm:"column:role;not null;default:USER"`
+	Role          UserRole `gorm:"column:role;not null;default:1"`
 	Active        bool     `gorm:"column:active;not null"`
 	LastLoginTime int64    `gorm:"column:last_login_at;not null;default:0"`
 }

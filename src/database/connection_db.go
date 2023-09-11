@@ -2,25 +2,22 @@ package database
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
-	"path/filepath"
-	"runtime"
 )
 
-func init() {
-	_, file, _, _ := runtime.Caller(0)
-	_ = os.Chdir(filepath.Dir(file))
-	var configPath string
-	if os.Getenv("ENVIRONMENT") == "local" {
-		configPath = filepath.Join("..", "..", "config", ".env_local")
-	} else {
-		configPath = filepath.Join("..", "..", "config", ".env")
-	}
-	_ = godotenv.Load(configPath)
-}
+//func init() {
+//	_, file, _, _ := runtime.Caller(0)
+//	_ = os.Chdir(filepath.Dir(file))
+//	var configPath string
+//	if os.Getenv("ENVIRONMENT") == "local" {
+//		configPath = filepath.Join("..", "..", "config", ".env_local")
+//	} else {
+//		configPath = filepath.Join("..", "..", "config", ".env")
+//	}
+//	_ = godotenv.Load(configPath)
+//}
 
 func ConnectDB() (*gorm.DB, error) {
 	var (

@@ -126,7 +126,7 @@ type BlogProfile struct {
 	CreatedAt    int64
 }
 
-func (dao *BlogsDao) GetBlogProfiles(userId int64, title, classification string, page int, onlyVisible bool) []BlogProfile {
+func (dao *BlogsDao) GetBlogProfiles(userId int64, title, classification string, page, pageSize int, onlyVisible bool) []BlogProfile {
 	query := dao.Schema.Select("user_id, title, is_anonymous, total_reviews, stars, created_at").Where("deleted_at = 0")
 	if userId != 0 {
 		query = query.Where("user_id = ?", userId)
@@ -141,7 +141,7 @@ func (dao *BlogsDao) GetBlogProfiles(userId int64, title, classification string,
 		query = query.Where("is_anonymous = 0")
 	}
 	var blogProfiles []BlogProfile
-	query.Order("created_at DESC").Limit(10).Offset(page * 10).Find(&blogProfiles)
+	query.Order("created_at DESC").Limit(pageSize).Offset(page * pageSize).Find(&blogProfiles)
 	return blogProfiles
 }
 
